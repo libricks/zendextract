@@ -1,4 +1,4 @@
 # Authors
 
-* Marc-Henri Pamiseux: <contact@libricks.fr>
+* Marc-Henri Pamiseux: <mhp@libricks.org>
 
