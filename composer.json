@@ -1,0 +1,11 @@
+{
+  "name": "zendextract",
+  "description": "",
+  "license": "",
+  "homepage": "https://github.com/libricks/zendextract",
+  "require": {
+
+      "nategood/httpful": "*"
+
+  }
+}

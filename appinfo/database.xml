@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<database>
+    <name>*dbname*</name>
+    <create>false</create>
+    <overwrite>false</overwrite>
+    <charset>utf8</charset>
+    <table>
+        <name>*dbprefix*zendextract_extractions</name>
+        <declaration>
+            <field>
+                <name>id</name>
+                <type>integer</type>
+                <default>0</default>
+                <notnull>true</notnull>
+                <autoincrement>1</autoincrement>
+                <length>4</length>
+            </field>
+            <field>
+                <name>name</name>
+                <type>text</type>
+                <notnull>true</notnull>
+                <length>100</length>
+            </field>
+            <field>
+                <name>default_path</name>
+                <type>text</type>
+                <notnull>true</notnull>
+                <length>1000</length>
+            </field>
+            <index>
+
+                <name>name_index</name>
+                <field>
+
+                    <name>name</name>
+                    <sorting>ascending</sorting>
+
+                </field>
+                <unique>1</unique>
+
+            </index>
+        </declaration>
+
+    </table>
+    <table>
+        <name>*dbprefix*zendextract_forms</name>
+        <declaration>
+            <field>
+                <name>id</name>
+                <type>integer</type>
+                <default>0</default>
+                <notnull>true</notnull>
+                <autoincrement>1</autoincrement>
+                <length>4</length>
+            </field>
+            <field>
+                <name>form_id</name>
+                <type>integer</type>
+                <notnull>true</notnull>
+                <length>4</length>
+            </field>
+            <field>
+                <name>extraction_id</name>
+                <type>integer</type>
+                <notnull>true</notnull>
+                <length>4</length>
+            </field>
+            <field>
+                <name>name</name>
+                <type>text</type>
+                <notnull>true</notnull>
+                <length>100</length>
+            </field>
+            <field>
+                <name>display_name</name>
+                <type>text</type>
+                <notnull>true</notnull>
+                <length>300</length>
+            </field>
+            <index>
+
+                <name>extractionid_index</name>
+                <field>
+
+                    <name>extraction_id</name>
+                    <sorting>ascending</sorting>
+
+                </field>
+
+            </index>
+        </declaration>
+
+    </table>
+    <table>
+        <name>*dbprefix*zendextract_fields</name>
+        <declaration>
+            <field>
+                <name>id</name>
+                <type>integer</type>
+                <default>0</default>
+                <notnull>true</notnull>
+                <autoincrement>1</autoincrement>
+                <length>4</length>
+            </field>
+            <field>
+                <name>field_id</name>
+                <type>text</type>
+                <notnull>true</notnull>
+                <length>20</length>
+            </field>
+            <field>
+                <name>form_id</name>
+                <type>integer</type>
+                <notnull>true</notnull>
+                <length>4</length>
+            </field>
+            <field>
+                <name>order_index</name>
+                <type>integer</type>
+                <notnull>true</notnull>
+                <default>0</default>
+                <length>4</length>
+            </field>
+            <field>
+                <name>title</name>
+                <type>text</type>
+                <notnull>true</notnull>
+                <length>100</length>
+            </field>
+            <field>
+                <name>type</name>
+                <type>text</type>
+                <notnull>true</notnull>
+                <length>100</length>
+            </field>
+            <field>
+                <name>column_name</name>
+                <type>text</type>
+                <length>100</length>
+            </field>
+            <field>
+                <name>custom_field_type</name>
+                <type>integer</type>
+                <default>0</default>
+                <notnull>true</notnull>
+                <length>4</length>
+            </field>
+            <field>
+                <name>date_format</name>
+                <type>text</type>
+                <length>100</length>
+            </field>
+            <field>
+                <name>nb_columns</name>
+                <type>integer</type>
+                <length>4</length>
+            </field>
+            <field>
+                <name>columns_names</name>
+                <type>text</type>
+                <length>100</length>
+            </field>
+            <field>
+                <name>is_active</name>
+                <type>boolean</type>
+            </field>
+            <index>
+
+                <name>formid_index</name>
+                <field>
+
+                    <name>form_id</name>
+                    <sorting>ascending</sorting>
+
+                </field>
+
+            </index>
+        </declaration>
+
+    </table>
+
+</database>

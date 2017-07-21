@@ -9,7 +9,7 @@
  * @copyright Marc-Henri Pamiseux 2017
  */
 
-namespace OCA\ZendeXtract\AppInfo;
+namespace OCA\ZendExtract\AppInfo;
 
 use OCP\AppFramework\App;
 
@@ -28,7 +28,7 @@ $container->query('OCP\INavigationManager')->add(function () use ($container) {
 		'order' => 10,
 
 		// the route that will be shown on startup
-		'href' => $urlGenerator->linkToRoute('zendextract.page.index'),
+		'href' => $urlGenerator->linkToRoute('zendextract.extraction.index'),
 
 		// the icon that will be shown in the navigation
 		// this file needs to exist in img/

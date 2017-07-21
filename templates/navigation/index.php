@@ -1,10 +1,8 @@
-<ul>
-	<li><a href="#">First level entry</a></li>
-	<li>
-		<a href="#">First level container</a>
-		<ul>
-			<li><a href="#">Second level entry</a></li>
-			<li><a href="#">Second level entry</a></li>
-		</ul>
-	</li>
-</ul>
+
+    <ul >
+        <li><a href="/extranet/index.php/apps/zendextract/">Extractions</a></li>
+        <li>
+            <a href="/extranet/index.php/apps/zendextract/export">Export</a>
+
+        </li>
+    </ul>
