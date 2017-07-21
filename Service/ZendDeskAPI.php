@@ -1,15 +1,15 @@
 <?php
-
 /**
  * nextCloud - Zendesk Xtractor
  *
- * This file is licensed under the Affero General Public License version 3 or
- * later. See the COPYING file.
+ * This file is licensed under the GNU Affero General Public License version 3
+ * or later. See the COPYING file.
  *
- * @author Tawfiq CADI TAZI <tawfiq@caditazi.fr>
- * @copyright Marc-Henri Pamiseux 2017
+ * @author Tawfiq Cadi Tazi <tawfiq@caditazi.fr>
+ * @copyright Copyright (C) 2017 SARL LIBRICKS
+ * @license AGPL
+ * @license https://opensource.org/licenses/AGPL-3.0
  */
-
 
 namespace OCA\ZendExtract\Service;
 
@@ -17,8 +17,6 @@ use \OCP\IConfig;
 
 class ZendDeskAPI
 {
-
-
     private $subdomain;
     private $username;
     private $token;
@@ -30,9 +28,8 @@ class ZendDeskAPI
         $this->subdomain = $config->getAppValue($AppName, 'zendextract_domain');
         $this->username = $config->getAppValue($AppName, 'zendextract_email');
         $this->token = $config->getAppValue($AppName, 'zendextract_token');
-
+        // TODO : Check how to put this URI in a variable.
         $this->uri = "https://$this->subdomain.zendesk.com";
-
 
     }
 

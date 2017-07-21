@@ -2,6 +2,9 @@
 /**
  * nextCloud - Zendesk Xtractor
  *
+ * This file is licensed under the GNU Affero General Public License version 3
+ * or later. See the COPYING file.
+ *
  * Create your routes in here. The name is the lowercase name of the controller
  * without the controller part, the stuff after the hash is the method.
  * e.g. page#index -> OCA\ZendExtract\Controller\PageController->index()
@@ -10,7 +13,8 @@
  * it's instantiated in there
  *
  * @author Marc-Henri Pamiseux <mhp@libricks.org>
- * @copyright Marc-Henri Pamiseux 2017
+ * @author Tawfiq Cadi Tazi <tawfiq@caditazi.fr>
+ * @copyright Copyright (C) 2017 SARL LIBRICKS
  * @license AGPL
  * @license https://opensource.org/licenses/AGPL-3.0
  */

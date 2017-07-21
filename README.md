@@ -16,8 +16,8 @@ Then open the Zend Xtractor app from the app menu.
 
 ## Maintainers
 
-- [Marc-Henri PAMISIEUX](https://github.com/marc-henri)
-- [Tawfiq CADI TAZI](https://github.com/tawfiqct)
+- [Marc-Henri Pamiseux](https://github.com/marc-henri)
+- [Tawfiq Cadi Tazi](https://github.com/tawfiqct)
 
 If you’d like to join, just go through the [issue list](https://github.com/libricks/zendextract/issues/) and fix some. :)
 

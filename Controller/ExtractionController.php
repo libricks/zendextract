@@ -2,14 +2,24 @@
 /**
  * nextCloud - Zendesk Xtractor
  *
- * @author Marc-Henri Pamiseux <mhp@libricks.org>
- * @copyright Marc-Henri Pamiseux 2017
- * @license AGPL
- * @license https://opensource.org/licenses/AGPL-3.0
+ * This file is licensed under the GNU Affero General Public License version 3
+ * or later. See the COPYING file.
+ *
+ * @category    Controller
+ * @package     OCA\ZendExtract\Controller
+ * @author      Tawfiq Cadi Tazi <tawfiq@caditazi.fr>
+ * @copyright   Copyright (C) 2017 SARL LIBRICKS
+ * @license     AGPL
+ * @license     https://opensource.org/licenses/AGPL-3.0
+ * @version     0.1 [<description>]
+ * @see         https://docs.nextcloud.com/server/12/developer_manual/app/controllers.html NextCloud Documentation
  */
 
 namespace OCA\ZendExtract\Controller;
 
+/**
+ * 
+ */
 require_once __DIR__ . '/../vendor/autoload.php';
 //use Zendesk\API\HttpClient as ZendeskAPI;
 
@@ -34,25 +44,91 @@ use OCP\Files\IRootFolder;
 use OCP\ILogger;
 use \DateTime;
 
+/**
+ *
+ *
+ */
 class ExtractionController extends Controller
 {
+    // {{{ properties
+
+    /**
+     * @var     integer $userId Potential values are ...
+     * @access  private
+     */
     private $userId;
+
+    /**
+     * @var     integer $extractionMapper Potential values are ...
+     * @access  private
+     */
     private $extractionMapper;
+
+    /**
+     * @var     integer $formMapper Potential values are ...
+     * @access  private
+     */
     private $formMapper;
+
+    /**
+     * @var     integer $fieldMapper Potential values are ...
+     * @access  private
+     */
     private $fieldMapper;
+
+    /**
+     * @var     integer $urlGenerator Potential values are ...
+     * @access  private
+     */
     private $urlGenerator;
+
+    /**
+     * @var     integer $root Potential values are ...
+     * @access  private
+     */
     private $root;
+
+    /**
+     * @var     integer $zendDeskAPI Potential values are ...
+     * @access  private
+     */
     private $zendDeskAPI;
+
+    /**
+     * @var     integer $logger Potential values are ...
+     * @access  private
+     */
     private $logger;
+
+    /**
+     * @var     integer $webRoot Potential values are ...
+     * @access  private
+     */
     private $webRoot;
+
+    // }}}
+
+    // {{{ __construct()
 
     /**
      * @NoAdminRequired
      * @NoCSRFRequired
-     *
-     */
-    public function __construct(
-        $AppName,
+	 *
+	 * constructor of the controller
+	 *
+	 * @param string $appName
+	 * @param IRequest $request
+	 * @param integer $UserId
+	 * @param ExtractionMapper $extractionMapper
+	 * @param FormMapper $formMapper
+     * @param FieldMapper $fieldMapper
+     * @param IURLGenerator $urlGenerator
+     * @param IRootFolder $rootfolder
+     * @param ILogger $logger
+     * @param string $webRoot
+     * @param ZendDeskAPI $zendDeskAPI
+	 */
+	public function __construct($appName,
         IRequest $request,
         $UserId,
         ExtractionMapper $extractionMapper,
@@ -77,11 +153,17 @@ class ExtractionController extends Controller
         $this->logger = $logger;
         $this->webRoot = $webRoot;
     }
+    // }}}
 
+    // {{{ index()
     /**
      * @NoAdminRequired
      * @NoCSRFRequired
      *
+     * function index is not documented
+     *
+     * @access  public
+     * @return  TemplateResponse
      */
     public function index()
     {
@@ -92,11 +174,19 @@ class ExtractionController extends Controller
             'view' => "index",
             'extractions' => $extractions));  // templates/index.php
     }
+    // }}}
 
-
+    // {{{ step()
     /**
      * @NoAdminRequired
      * @NoCSRFRequired
+     *
+     * function step is not documented
+     *
+     * @access  public
+     * @param   string $step
+     * @param   integer $id
+     * @return  TemplateResponse
      */
     public function step($step, $id)
     {
@@ -137,18 +227,21 @@ class ExtractionController extends Controller
             );
         }
     }
+    // }}}
 
 
+    // {{{ create()
     /**
      * @NoAdminRequired
      * @NoCSRFRequired
+     *
+     * @todo    function create is not documented
+     * @access  public
+     * @return  TemplateResponse
      */
     public function create()
     {
-
-
         $all_forms = $this->zendDeskAPI->get("/api/v2/ticket_forms.json");
-
 
         return new TemplateResponse('zendextract', 'index', array(
                 'webRoot' => $this->webRoot,
@@ -158,10 +251,17 @@ class ExtractionController extends Controller
                 'extraction' => new Extraction())
         );  // templates/index.php
     }
+    // }}}
 
+    // {{{ delete()
     /**
      * @NoAdminRequired
      * @NoCSRFRequired
+     *
+     * @todo    function delete is not documented
+     * @access  public
+     * @param   integer $id
+     * @return  TemplateResponse
      */
     public function delete($id)
     {
@@ -174,33 +274,44 @@ class ExtractionController extends Controller
                 'extraction' =>$extraction)
         );  // templates/index.php
     }
+    // }}}
 
-    /**
-     * @NoAdminRequired
-     * @NoCSRFRequired
-     */
-    public function deleteConfirm($id)
-    {
-
-        $extraction = $this->extractionMapper->find($id);
-
-        $this->formMapper->deleteByExtractionId($id);
-
-        $this->extractionMapper->delete($extraction);
-
-        return new RedirectResponse($this->webRoot.'/index.php/apps/zendextract/');
-    }
-
+    // {{{ deleteConfirm()
     /**
      * @NoAdminRequired
      * @NoCSRFRequired
      *
+     * @todo    function deleteConfirm is not documented
+     * @access  public
+     * @param   integer $id
+     * @return  RedirectResponse
+     */
+    public function deleteConfirm($id)
+    {
+        $extraction = $this->extractionMapper->find($id);
+        $this->formMapper->deleteByExtractionId($id);
+        $this->extractionMapper->delete($extraction);
+
+        return new RedirectResponse($this->webRoot.'/index.php/apps/zendextract/');
+    }
+    // }}}
+
+    // {{{ step1POST()
+    /**
+     * @NoAdminRequired
+     * @NoCSRFRequired
+     *
+     * @todo    function step1POST is not documented
+     * @access  public
+     * @param   string $name
+     * @param   collection $forms
+     * @param   string $defaultpath|empty
+     * @param   integer $id|null
+     * @return  RedirectResponse
      */
     public function step1POST($name, $forms, $defaultpath = "", $id = null)
     {
-
-
-        if ($id === nulll) {
+        if ($id === null) {
             $extraction = $this->extractionMapper->find($id);
         } else {
             try {
@@ -214,12 +325,8 @@ class ExtractionController extends Controller
             }
         }
 
-
         foreach ($forms as $form) {
-
-
             $result = $this->zendDeskAPI->get("/api/v2/ticket_forms/$form.json");
-
 
             $form = new Form();
             $form->setName($result->ticket_form->name);
@@ -227,7 +334,6 @@ class ExtractionController extends Controller
             $form->setExtractionId($extraction->getId());
             $form->setFormId($result->ticket_form->id);
             $this->formMapper->insert($form);
-
 
             if ($id == null) {
 
@@ -242,15 +348,14 @@ class ExtractionController extends Controller
                     $f->setIsActive(false);
                     $this->fieldMapper->insert($f);
                 }
-
             }
 
             $fields = $result->ticket_form->ticket_field_ids;
 
             foreach ($fields as $field) {
                 $field = $this->zendDeskAPI->get("/api/v2/ticket_fields/$field.json");
-
                 $database_field = $this->fieldMapper->findByFormAndFieldId($field->ticket_field->id, $f->id);
+
                 if ($database_field == null) {
                     $f = new Field();
 
@@ -267,17 +372,22 @@ class ExtractionController extends Controller
                     $database_field->setType($field->ticket_field->type);
                     $this->fieldMapper->update($database_field);
                 }
-
             }
-
         }
         return new RedirectResponse($this->webRoot."/index.php/apps/zendextract/extraction/step/2/" . $extraction->id);
     }
+    // }}}
 
+    // {{{ step2POST()
     /**
      * @NoAdminRequired
      * @NoCSRFRequired
      *
+     * @todo    function step2POST is not documented
+     * @access  public
+     * @param   integer $id
+     * @param   collection $selected_fields
+     * @return  RedirectResponse
      */
     public function step2POST($id, $selected_fields)
     {
@@ -295,11 +405,18 @@ class ExtractionController extends Controller
 
         return new RedirectResponse($this->webRoot."/index.php/apps/zendextract/extraction/step/3/" . $id);
     }
+    // }}}
 
+    // {{{ step3POST()
     /**
      * @NoAdminRequired
      * @NoCSRFRequired
      *
+     * @todo    function step3POST is not documented
+     * @access  public
+     * @param   integer $id
+     * @param   collection $fields
+     * @return  RedirectResponse
      */
     public function step3POST($id, $fields)
     {
@@ -321,14 +438,19 @@ class ExtractionController extends Controller
             $i++;
         }
 
-
         return new RedirectResponse($this->webRoot."/index.php/apps/zendextract/extraction/step/3/" . $id);
     }
+    // }}}
 
+    // {{{ export()
     /**
      * @NoAdminRequired
      * @NoCSRFRequired
      *
+     * @todo    function export is not documented
+     * @access  public
+     * @param   integer $id|null
+     * @return  TemplateResponse
      */
     public function export($id=null)
     {
@@ -340,11 +462,20 @@ class ExtractionController extends Controller
             'extractions' => $extractions,
             'extractionId' => $id));  // templates/index.php
     }
+    // }}}
 
+    // {{{ generate()
     /**
      * @NoAdminRequired
      * @NoCSRFRequired
      *
+     * @todo    function generate() is not documented
+     * @access  public
+     * @param   integer $extractionId
+     * @param   string $from
+     * @param   string $to
+     * @param   string $type
+     * @return  TemplateResponse
      */
     public function generate($extractionId, $from, $to, $type)
     {
@@ -357,14 +488,10 @@ class ExtractionController extends Controller
             $query = "type:ticket";
             foreach ($forms as $form) {
                 $query = $query . " ticket_form_id:" . $form;
-
             }
 
             $start = DateTime::createFromFormat('d/m/Y', $from);
-
-
             $end = DateTime::createFromFormat('d/m/Y', $to);
-
 
             while ($start <= $end) {
                 $query = $query . " custom_field_23982008:" . $start->format("Y-m-d ");
@@ -377,16 +504,13 @@ class ExtractionController extends Controller
                 $query = $query . " custom_field_23964913:f_réclamation";
             }
 
-
             $result = $this->zendDeskAPI->get("/api/v2/search.json?query=" . urlencode($query));
-
             $tickets = $result->results;
 
             while ($result->next_page != null) {
                 $result = $this->zendDeskAPI->getAbsolute($result->next_page);
                 $tickets = array_merge($tickets, $result->results);
             }
-
 
         } catch (Httpful\Exception $e) {
             $this->logger->error("Problème lors de la récupération des tickets " . $e->getMessage(), array('app' => $this->appName));
@@ -395,6 +519,7 @@ class ExtractionController extends Controller
 
         $arrayCSV = array();
         $row = array();
+
         foreach ($fields as $field) {
             if ($field->getCustomFieldType() == 2) {
                 $columnsNames = $field->getColumnsNames();
@@ -405,13 +530,12 @@ class ExtractionController extends Controller
             } else {
                 $row[] = $field->getColumnName();
             }
-
-
         }
+
         $arrayCSV[] = $row;
         $customFieldsOptions = array();
-        foreach ($tickets as $ticket) {
 
+        foreach ($tickets as $ticket) {
             $row = array();
             $value = "";
             foreach ($fields as $field) {
@@ -445,7 +569,6 @@ class ExtractionController extends Controller
                             $value = $ticket->recipient;
                             break;
                     }
-
                 } else {
                     $value = $this->customfieldsSearch($ticket, $field->getFieldId());
                 }
@@ -489,8 +612,6 @@ class ExtractionController extends Controller
                 } else {
                     $row[] = $value;
                 }
-
-
             }
             $arrayCSV[] = $row;
         }
@@ -509,13 +630,10 @@ class ExtractionController extends Controller
 
         $dt = new DateTime();
         $filename = $dt->format('Y-m-d H:i:s');
-
-
         $file = $folder->newFile($filename . ".csv");
-
         $fileResource = $file->fopen('w');
-        foreach ($arrayCSV as $row) {
 
+        foreach ($arrayCSV as $row) {
             fputcsv($fileResource, $row, ";");
         }
 
@@ -527,14 +645,24 @@ class ExtractionController extends Controller
             'folder' => $folder,
             'file' => $file));  // templates/index.php
     }
+    // }}}
 
-
+    // {{{ customfieldsSearch()
+    /**
+     * @NoAdminRequired
+     * @NoCSRFRequired
+     *
+     * @todo    function customfieldsSearch() is not documented
+     * @access  public
+     * @param   integer $ticket
+     * @param   integer $customFieldId
+     * @return  string
+     */
     private function customfieldsSearch($ticket, $customFieldId)
     {
         $orderedCustomFields = $ticket->custom_fields;
 
         usort($orderedCustomFields, array($this, 'customFieldSort'));
-
 
         $min = 0;
         $max = count($orderedCustomFields) + 1;
@@ -544,19 +672,13 @@ class ExtractionController extends Controller
 
             $index = (int)(($min + $max) / 2);
 
-
             if ($orderedCustomFields[$index]->id > $customFieldId) {
                 $max = $index;
             } else if ($orderedCustomFields[$index]->id < $customFieldId) {
-
                 $min = $index;
-
             } else {
-
                 $find = 1;
             }
-
-
         }
 
         if ($find) {
@@ -567,11 +689,21 @@ class ExtractionController extends Controller
 
         //23653097
     }
+    // }}}
 
+    // {{{ customFieldSort()
+    /**
+     *
+     * @todo    function customFieldSort() is not documented
+     * @access  private static
+     * @param   integer $a
+     * @param   integer $b
+     * @return  integer
+     */
     private static function customFieldSort($a, $b)
     {
-
         if ($a->id == $b->id) return 0;
         return ($a->id < $b->id) ? -1 : 1;
     }
+    // }}}
 }
