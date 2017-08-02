@@ -1,4 +1,4 @@
-<h1 id="hello">Etape 2 - Sélection des champs</h1>
+<h1 id="step2">Etape 2 - Sélection des champs</h1>
 <h2>Extraction : <?php echo $_["extraction"]->getName() ?> </h2>
 <form class="form-horizontal" method="post" action="<?php echo $_["webRoot"] ?>/index.php/apps/zendextract/extraction/step2POST">
 <table class="table table-bordered table-striped table-hover">
