@@ -20,7 +20,7 @@ namespace OCA\ZendExtract\Controller;
 /**
  * 
  */
-require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/../Vendor/autoload.php';
 //use Zendesk\API\HttpClient as ZendeskAPI;
 
 use Couchbase\Exception;
