@@ -28,6 +28,7 @@
                         <option <?php echo $field->getCustomFieldType() == "0" ? "selected" : "" ?> value="0"></option>
                         <option <?php echo $field->getCustomFieldType() == "1" ? "selected" : "" ?> value="1">Formater une date</option>
                         <option <?php echo $field->getCustomFieldType() == "2" ? "selected" : "" ?> value="2">Scinder colonne famille</option>
+                        <option <?php echo $field->getCustomFieldType() == "3" ? "selected" : "" ?> value="3">Texte fixe</option>
                     </select>
                 </td>
 <!--                <td></td>-->
@@ -43,6 +44,11 @@
                         <br>
                         <label>Noms des colonnes</label>
                         <input  name="fields[<?php echo $field->id ?>][columns_names]" class="form-control" type="text" value="<?php echo $field->getColumnsNames() ?>"/>
+                    </div>
+                    <div data-option="3">
+                        <label>Texte</label>
+                        <input  name="fields[<?php echo $field->id ?>][custom_text]" type="text"  value="<?php echo $field->getCustomText() ?>">
+
                     </div>
 
                 </td>

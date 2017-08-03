@@ -19,6 +19,7 @@ class Field extends Entity
 {
 
     protected $formId;
+    protected $extractionId;
     protected $fieldId;
     protected $orderIndex;
     protected $title;
@@ -29,6 +30,7 @@ class Field extends Entity
     protected $dateFormat;
     protected $nbColumns;
     protected $columnsNames;
+    protected $customText;
     protected $isActive;
 
     protected $formName;

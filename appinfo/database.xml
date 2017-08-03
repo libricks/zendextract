@@ -115,6 +115,12 @@
                 <length>4</length>
             </field>
             <field>
+                <name>extraction_id</name>
+                <type>integer</type>
+                <notnull>true</notnull>
+                <length>4</length>
+            </field>
+            <field>
                 <name>order_index</name>
                 <type>integer</type>
                 <notnull>true</notnull>
@@ -149,6 +155,11 @@
                 <name>date_format</name>
                 <type>text</type>
                 <length>100</length>
+            </field>
+            <field>
+                <name>custom_text</name>
+                <type>text</type>
+                <length>200</length>
             </field>
             <field>
                 <name>nb_columns</name>

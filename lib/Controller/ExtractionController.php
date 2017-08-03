@@ -18,9 +18,10 @@
 namespace OCA\ZendExtract\Controller;
 
 /**
- * 
+ *
  */
 require_once __DIR__ . '/../Vendor/autoload.php';
+
 //use Zendesk\API\HttpClient as ZendeskAPI;
 
 use Couchbase\Exception;
@@ -113,32 +114,32 @@ class ExtractionController extends Controller
     /**
      * @NoAdminRequired
      * @NoCSRFRequired
-	 *
-	 * constructor of the controller
-	 *
-	 * @param string $appName
-	 * @param IRequest $request
-	 * @param integer $UserId
-	 * @param ExtractionMapper $extractionMapper
-	 * @param FormMapper $formMapper
+     *
+     * constructor of the controller
+     *
+     * @param string $appName
+     * @param IRequest $request
+     * @param integer $UserId
+     * @param ExtractionMapper $extractionMapper
+     * @param FormMapper $formMapper
      * @param FieldMapper $fieldMapper
      * @param IURLGenerator $urlGenerator
      * @param IRootFolder $rootfolder
      * @param ILogger $logger
      * @param string $webRoot
      * @param ZendDeskAPI $zendDeskAPI
-	 */
-	public function __construct($appName,
-        IRequest $request,
-        $UserId,
-        ExtractionMapper $extractionMapper,
-        FormMapper $formMapper,
-        FieldMapper $fieldMapper,
-        IURLGenerator $urlGenerator,
-        IRootFolder $rootfolder,
-        ILogger $logger,
-        $webRoot,
-        ZendDeskAPI $zendDeskAPI)
+     */
+    public function __construct($appName,
+                                IRequest $request,
+                                $UserId,
+                                ExtractionMapper $extractionMapper,
+                                FormMapper $formMapper,
+                                FieldMapper $fieldMapper,
+                                IURLGenerator $urlGenerator,
+                                IRootFolder $rootfolder,
+                                ILogger $logger,
+                                $webRoot,
+                                ZendDeskAPI $zendDeskAPI)
     {
 
         parent::__construct($AppName, $request);
@@ -271,7 +272,7 @@ class ExtractionController extends Controller
         return new TemplateResponse('zendextract', 'index', array(
                 'webRoot' => $this->webRoot,
                 'view' => "deleteconfirm",
-                'extraction' =>$extraction)
+                'extraction' => $extraction)
         );  // templates/index.php
     }
     // }}}
@@ -292,7 +293,7 @@ class ExtractionController extends Controller
         $this->formMapper->deleteByExtractionId($id);
         $this->extractionMapper->delete($extraction);
 
-        return new RedirectResponse($this->webRoot.'/index.php/apps/zendextract/');
+        return new RedirectResponse($this->webRoot . '/index.php/apps/zendextract/');
     }
     // }}}
 
@@ -305,12 +306,14 @@ class ExtractionController extends Controller
      * @access  public
      * @param   string $name
      * @param   collection $forms
-     * @param   string $defaultpath|empty
-     * @param   integer $id|null
+     * @param   string $defaultpath |empty
+     * @param   integer $id |null
      * @return  RedirectResponse
      */
     public function step1POST($name, $forms, $defaultpath = "", $id = null)
     {
+
+        //Création de l'extraction
         if ($id === null) {
             $extraction = $this->extractionMapper->find($id);
         } else {
@@ -320,35 +323,41 @@ class ExtractionController extends Controller
                 $e->setDefaultPath($defaultpath);
                 $extraction = $this->extractionMapper->insert($e);
             } catch (\Exception $e) {
+                //Si l'extraction est déjà créée
                 $this->logger->error("Extraction déjà créée " . $e->getMessage(), array('app' => $this->appName));
-                return new RedirectResponse($this->webRoot.'/index.php/apps/zendextract/');
+                return new RedirectResponse($this->webRoot . '/index.php/apps/zendextract/');
             }
         }
 
+        //Création des champs de base
+        if ($id == null) {
+
+            $base_fields = array("id","form_name", "channel", "created_at", "modified_at", "type", "subject", "description", "status", "recipient");
+
+            foreach ($base_fields as $title) {
+                $f = new Field();
+                $f->setExtractionId($extraction->getId());
+                $f->setTitle($title);
+                $f->setColumnName($title);
+                $f->setType("base");
+                $f->setIsActive(false);
+                $this->fieldMapper->insert($f);
+            }
+        }
+
+
+        //Création des champs pour chaque formulaire
         foreach ($forms as $form) {
             $result = $this->zendDeskAPI->get("/api/v2/ticket_forms/$form.json");
 
             $form = new Form();
+            $f->setFormId($form->getId());
             $form->setName($result->ticket_form->name);
             $form->setDisplayName($result->ticket_form->display_name);
             $form->setExtractionId($extraction->getId());
             $form->setFormId($result->ticket_form->id);
             $this->formMapper->insert($form);
 
-            if ($id == null) {
-
-                $base_fields = array("id", "channel", "created_at", "modified_at", "type", "subject", "description", "status", "recipient");
-
-                foreach ($base_fields as $title) {
-                    $f = new Field();
-                    $f->setFormId($form->getId());
-                    $f->setTitle($title);
-                    $f->setColumnName($title);
-                    $f->setType("base");
-                    $f->setIsActive(false);
-                    $this->fieldMapper->insert($f);
-                }
-            }
 
             $fields = $result->ticket_form->ticket_field_ids;
 
@@ -374,7 +383,7 @@ class ExtractionController extends Controller
                 }
             }
         }
-        return new RedirectResponse($this->webRoot."/index.php/apps/zendextract/extraction/step/2/" . $extraction->id);
+        return new RedirectResponse($this->webRoot . "/index.php/apps/zendextract/extraction/step/2/" . $extraction->id);
     }
     // }}}
 
@@ -403,7 +412,7 @@ class ExtractionController extends Controller
 
         }
 
-        return new RedirectResponse($this->webRoot."/index.php/apps/zendextract/extraction/step/3/" . $id);
+        return new RedirectResponse($this->webRoot . "/index.php/apps/zendextract/extraction/step/3/" . $id);
     }
     // }}}
 
@@ -427,7 +436,7 @@ class ExtractionController extends Controller
             $f = $this->fieldMapper->find($field["id"]);
             $f->setColumnName($field["column_name"]);
             $f->setCustomFieldType($field["custom_field_type"]);
-
+            $f->setCustomText($field["custom_text"]);
             $f->setDateFormat($field["date_format"]);
             $f->setNbColumns($field["nb_columns"]);
             $f->setColumnsNames($field["columns_names"]);
@@ -438,7 +447,7 @@ class ExtractionController extends Controller
             $i++;
         }
 
-        return new RedirectResponse($this->webRoot."/index.php/apps/zendextract/extraction/step/3/" . $id);
+        return new RedirectResponse($this->webRoot . "/index.php/apps/zendextract/extraction/step/3/" . $id);
     }
     // }}}
 
@@ -449,10 +458,10 @@ class ExtractionController extends Controller
      *
      * @todo    function export is not documented
      * @access  public
-     * @param   integer $id|null
+     * @param   integer $id |null
      * @return  TemplateResponse
      */
-    public function export($id=null)
+    public function export($id = null)
     {
 
         $extractions = $this->extractionMapper->findAll();
@@ -536,13 +545,19 @@ class ExtractionController extends Controller
         $customFieldsOptions = array();
 
         foreach ($tickets as $ticket) {
+
             $row = array();
             $value = "";
+
             foreach ($fields as $field) {
                 if ($field->getType() == "base") {
                     switch ($field->getTitle()) {
                         case "id":
                             $value = $ticket->id;
+                            break;
+                        case "form_name":
+                            $form = $this->zendDeskAPI->get("/api/v2/ticket_forms/".$ticket->ticket_form_id.".json");
+                            $value = $form->ticket_form->name;
                             break;
                         case "channel":
                             $value = $ticket->via->channel;
@@ -609,6 +624,8 @@ class ExtractionController extends Controller
                     for ($i = 0; $i < count($array_result); $i++) {
                         $row[] = $array_result[$i];
                     }
+                } else if ($field->getCustomFieldType() == 3) {
+                    $row[] = $field->getCustomText();
                 } else {
                     $row[] = $value;
                 }

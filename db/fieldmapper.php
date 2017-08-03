@@ -54,27 +54,50 @@ class FieldMapper extends Mapper
         $this->execute($sql, [$extractionId]);
     }
 
+    /**
+     *
+     * function findAllByExtractionId is not documented
+     *
+     * @access  public
+     * @param   integer $extractionId
+     * @param   boolean $selected, active fields or all fields
+     * @return  Array, tableau des fields
+     */
     public function findAllByExtractionId($extractionId, $selected = false)
     {
+
         if ($selected) {
-            $sql = 'SELECT fields.*, forms.name as formname
-                FROM `*PREFIX*zendextract_fields` as fields 
-                INNER JOIN `*PREFIX*zendextract_forms` as forms ON forms.id = fields.form_id
-                WHERE forms.extraction_id = ? AND fields.is_active = true
-                ORDER BY fields.order_index';
+            $sql = "
+                SELECT * FROM (
+                    SELECT fields.*, NULL as formname
+                    FROM `*PREFIX*zendextract_fields` as fields 
+                    INNER JOIN `*PREFIX*zendextract_extractions` as extractions ON extractions.id = fields.extraction_id
+                    WHERE fields.extraction_id = ? AND fields.is_active = true
+                    UNION
+                    SELECT fields.*, forms.name as formname
+                    FROM `*PREFIX*zendextract_fields` as fields 
+                    INNER JOIN `*PREFIX*zendextract_forms` as forms ON forms.id = fields.form_id
+                    WHERE forms.extraction_id = ? AND fields.is_active = true
+                ) as t1   
+                ORDER BY t1.order_index
+         ";
 
 
-            $stmt = $this->execute($sql, [$extractionId]);
         } else {
-            $sql = 'SELECT fields.*, forms.name as formname
+            $sql = '
+                SELECT fields.*, NULL as formname
+                FROM `*PREFIX*zendextract_fields` as fields 
+                INNER JOIN `*PREFIX*zendextract_extractions` as extractions ON extractions.id = fields.extraction_id
+                WHERE fields.extraction_id = ? 
+                UNION
+                SELECT fields.*, forms.name as formname
                 FROM `*PREFIX*zendextract_fields` as fields 
                 INNER JOIN `*PREFIX*zendextract_forms` as forms ON forms.id = fields.form_id
-                WHERE forms.extraction_id = ? ';
-
-
-            $stmt = $this->execute($sql, [$extractionId]);
+                WHERE forms.extraction_id = ? 
+                ';
         }
 
+        $stmt = $this->execute($sql, [$extractionId, $extractionId]);
 
         $fields = array();
         while ($row = $stmt->fetch()) {
@@ -84,7 +107,7 @@ class FieldMapper extends Mapper
             $f->setFieldId($row["field_id"]);
             $f->id = $row["id"];
             $f->setFormId($row["form_id"]);
-
+            $f->setExtractionId($row["extraction_id"]);
             $f->setFieldId($row["field_id"]);
             $f->setOrderIndex($row["order_index"]);
             $f->setTitle($row["title"]);
@@ -94,9 +117,11 @@ class FieldMapper extends Mapper
             $f->setDateFormat($row["date_format"]);
             $f->setNbColumns($row["nb_columns"]);
             $f->setColumnsNames($row["columns_names"]);
+            $f->setCustomText($row["custom_text"]);
             $f->setIsActive($row["is_active"]);
             $f->setFormName($row["formname"]);
             $fields[] = $f;
+
         }
 
         $stmt->closeCursor();
