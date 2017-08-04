@@ -38,7 +38,7 @@ class FieldMapper extends Mapper
 
     public function findAllByFormId($formId, $limit, $offset)
     {
-        $sql = 'SELECT * FROM `*PREFIX*zendextract_fields WHERE form_id = ?`';
+        $sql = 'SELECT * FROM `*PREFIX*zendextract_fields WHERE form_id = ? ORDER BY order_index`';
         return $this->findEntities($sql, [$formId], $limit, $offset);
     }
 
@@ -47,6 +47,14 @@ class FieldMapper extends Mapper
         $sql = 'UPDATE  `*PREFIX*zendextract_fields` as fields 
                 INNER JOIN `*PREFIX*zendextract_forms` as forms ON forms.id = fields.form_id
                 INNER JOIN `*PREFIX*zendextract_extractions` as extractions ON forms.extraction_id = extractions.id
+                SET is_active = false
+                WHERE extractions.id = ?';
+
+
+        $this->execute($sql, [$extractionId]);
+
+        $sql = 'UPDATE  `*PREFIX*zendextract_fields` as fields 
+                INNER JOIN `*PREFIX*zendextract_extractions` as extractions ON fields.extraction_id = extractions.id
                 SET is_active = false
                 WHERE extractions.id = ?';
 
@@ -85,15 +93,18 @@ class FieldMapper extends Mapper
 
         } else {
             $sql = '
-                SELECT fields.*, NULL as formname
-                FROM `*PREFIX*zendextract_fields` as fields 
-                INNER JOIN `*PREFIX*zendextract_extractions` as extractions ON extractions.id = fields.extraction_id
-                WHERE fields.extraction_id = ? 
-                UNION
-                SELECT fields.*, forms.name as formname
-                FROM `*PREFIX*zendextract_fields` as fields 
-                INNER JOIN `*PREFIX*zendextract_forms` as forms ON forms.id = fields.form_id
-                WHERE forms.extraction_id = ? 
+                SELECT * FROM (
+                    SELECT fields.*, NULL as formname
+                    FROM `*PREFIX*zendextract_fields` as fields 
+                    INNER JOIN `*PREFIX*zendextract_extractions` as extractions ON extractions.id = fields.extraction_id
+                    WHERE fields.extraction_id = ? 
+                    UNION
+                    SELECT fields.*, forms.name as formname
+                    FROM `*PREFIX*zendextract_fields` as fields 
+                    INNER JOIN `*PREFIX*zendextract_forms` as forms ON forms.id = fields.form_id
+                    WHERE forms.extraction_id = ?
+                ) as t1
+                ORDER BY t1.order_index 
                 ';
         }
 

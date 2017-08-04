@@ -328,11 +328,11 @@ class ExtractionController extends Controller
                 return new RedirectResponse($this->webRoot . '/index.php/apps/zendextract/');
             }
         }
-
+        $order_index = 1000;
         //Création des champs de base
         if ($id == null) {
 
-            $base_fields = array("id","form_name", "channel", "created_at", "modified_at", "type", "subject", "description", "status", "recipient");
+            $base_fields = array("id", "form_name", "channel", "created_at", "modified_at", "type", "subject", "description", "status", "recipient");
 
             foreach ($base_fields as $title) {
                 $f = new Field();
@@ -341,6 +341,7 @@ class ExtractionController extends Controller
                 $f->setColumnName($title);
                 $f->setType("base");
                 $f->setIsActive(false);
+                $f->setOrderIndex($order_index++);
                 $this->fieldMapper->insert($f);
             }
         }
@@ -374,6 +375,7 @@ class ExtractionController extends Controller
                     $f->setColumnName($field->ticket_field->title);
                     $f->setType($field->ticket_field->type);
                     $f->setIsActive(false);
+                    $f->setOrderIndex($order_index++);
                     $this->fieldMapper->insert($f);
                 } else {
                     $database_field->setFiedId($field->ticket_field->id);
@@ -556,7 +558,7 @@ class ExtractionController extends Controller
                             $value = $ticket->id;
                             break;
                         case "form_name":
-                            $form = $this->zendDeskAPI->get("/api/v2/ticket_forms/".$ticket->ticket_form_id.".json");
+                            $form = $this->zendDeskAPI->get("/api/v2/ticket_forms/" . $ticket->ticket_form_id . ".json");
                             $value = $form->ticket_form->name;
                             break;
                         case "channel":
