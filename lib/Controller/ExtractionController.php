@@ -142,7 +142,7 @@ class ExtractionController extends Controller
                                 ZendDeskAPI $zendDeskAPI)
     {
 
-        parent::__construct($AppName, $request);
+        parent::__construct($appName, $request);
 
         $this->userId = $UserId;
         $this->extractionMapper = $extractionMapper;
@@ -381,7 +381,7 @@ class ExtractionController extends Controller
                     $database_field->setFieldId($field->ticket_field->id);
                     $database_field->setTitle($field->ticket_field->title);
                     $database_field->setType($field->ticket_field->type);
-                   $database_field->setFormId(0);
+                    $database_field->setFormId(0);
                     $this->fieldMapper->update($database_field);
                 }
             }
@@ -507,7 +507,6 @@ class ExtractionController extends Controller
             }
 
 
-
             if ($toTreatment != "" && $fromTreatment != "") {
                 //Filtrer par date de traitement
                 $start = DateTime::createFromFormat('d/m/Y', $fromTreatment);
@@ -611,7 +610,7 @@ class ExtractionController extends Controller
                             break;
                     }
                 } else {
-                    $value = $this->customfieldsSearch($ticket, $field->getFieldId());
+                    $value = $this->customfieldsSearch($ticket, $field->getFieldId(), $extractionId);
                 }
 
                 if ($field->getCustomFieldType() == 1) {
@@ -688,9 +687,13 @@ class ExtractionController extends Controller
             'folder' => $folder,
             'file' => $file));  // templates/index.php
     }
+
     // }}}
 
+
+    private $custom_field_options = array();
     // {{{ customfieldsSearch()
+
     /**
      * @NoAdminRequired
      * @NoCSRFRequired
@@ -701,7 +704,7 @@ class ExtractionController extends Controller
      * @param   integer $customFieldId
      * @return  string
      */
-    private function customfieldsSearch($ticket, $customFieldId)
+    private function customfieldsSearch($ticket, $customFieldId, $extractionId)
     {
         $orderedCustomFields = $ticket->custom_fields;
 
@@ -725,16 +728,37 @@ class ExtractionController extends Controller
         }
 
         if ($find) {
-            return $orderedCustomFields[$index]->value;
+
+            $database_field = $this->fieldMapper->findByExtractionAndFieldId($extractionId, $orderedCustomFields[$index]->id);
+
+            if ($database_field != null && $database_field->getType() == "tagger") {
+
+                if (array_key_exists($orderedCustomFields[$index]->id, $this->custom_field_options)) {
+                    $custom_field_option = $this->custom_field_options[$orderedCustomFields[$index]->id];
+                } else {
+                    $custom_field_option = $this->zendDeskAPI->get("/api/v2/ticket_fields/" . $orderedCustomFields[$index]->id . ".json");
+                    $this->custom_field_options[$orderedCustomFields[$index]->id] = $custom_field_option;
+
+                }
+                foreach ($custom_field_option->ticket_field->custom_field_options as $option) {
+                    if ($option->value == $orderedCustomFields[$index]->value) {
+                        return $option->raw_name;
+                    }
+                }
+
+            } else {
+                return $orderedCustomFields[$index]->value;
+            }
         }
 
         return "";
 
         //23653097
     }
-    // }}}
 
-    // {{{ customFieldSort()
+// }}}
+
+// {{{ customFieldSort()
     /**
      *
      * @todo    function customFieldSort() is not documented
@@ -743,10 +767,11 @@ class ExtractionController extends Controller
      * @param   integer $b
      * @return  integer
      */
-    private static function customFieldSort($a, $b)
+    private
+    static function customFieldSort($a, $b)
     {
         if ($a->id == $b->id) return 0;
         return ($a->id < $b->id) ? -1 : 1;
     }
-    // }}}
+// }}}
 }
