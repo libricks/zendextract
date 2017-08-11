@@ -344,6 +344,19 @@ class ExtractionController extends Controller
                 $f->setOrderIndex($order_index++);
                 $this->fieldMapper->insert($f);
             }
+
+            $conversation_fields = array("conversation niveau 2", "conversation niveau 3");
+
+            foreach ($conversation_fields as $title) {
+                $f = new Field();
+                $f->setExtractionId($extraction->getId());
+                $f->setTitle($title);
+                $f->setColumnName($title);
+                $f->setType("conversation");
+                $f->setIsActive(false);
+                $f->setOrderIndex($order_index++);
+                $this->fieldMapper->insert($f);
+            }
         }
 
 
@@ -474,9 +487,13 @@ class ExtractionController extends Controller
             'extractions' => $extractions,
             'extractionId' => $id));  // templates/index.php
     }
+
     // }}}
 
+    private $convesations = array();
+
     // {{{ generate()
+
     /**
      * @NoAdminRequired
      * @NoCSRFRequired
@@ -491,6 +508,8 @@ class ExtractionController extends Controller
      */
     public function generate($extractionId, $fromTreatment, $toTreatment, $fromContact, $toContact, $type)
     {
+
+
         //Récupération de l'extraction en BDD
         $extraction = $this->extractionMapper->find($extractionId);
         try {
@@ -609,6 +628,28 @@ class ExtractionController extends Controller
                             $value = $ticket->recipient;
                             break;
                     }
+
+                } else if ($field->getType() == "conversation") {
+                    if (array_key_exists($ticket->id, $this->convesations)) {
+                        $conversation = $this->convesations[$ticket->id];
+                    } else {
+                        $conversation = $this->zendDeskAPI->get("/api/v2/tickets/" . $ticket->id . "/comments.json");
+                        $this->convesations[$ticket->id] = $conversation;
+                    }
+                    if ($field->getTitle() == "conversation niveau 2") {
+                        if (count($conversation->comments) >= 2)
+                            $value = $conversation->comments[1]->body;
+                        else{
+                            $value = "";
+                        }
+                    } else if ($field->getTitle() == "conversation niveau 3") {
+                        if (count($conversation->comments) >= 3)
+                            $value = $conversation->comments[2]->body;
+                        else{
+                            $value = "";
+                        }
+                    }
+
                 } else {
                     $value = $this->customfieldsSearch($ticket, $field->getFieldId(), $extractionId);
                 }
