@@ -22,7 +22,7 @@ $(function () {
         else
             row.next().after(row);
     });
-    $(".options").change(function(){
+    $(".options").change(function () {
         updateOptions();
     });
     updateOptions();
@@ -37,6 +37,18 @@ $(function () {
         useCurrent: false
     });
 
+    $('#datetimepicker3').datetimepicker({
+        locale: 'fr-FR',
+        format: 'l',
+        useCurrent: false
+    });
+
+    $('#datetimepicker4').datetimepicker({
+        locale: 'fr-FR',
+        format: 'l',
+        useCurrent: false
+    });
+
     $("#datetimepicker1").on("dp.change", function (e) {
         $('#datetimepicker2').data("DateTimePicker").minDate(e.date);
     });
@@ -44,30 +56,46 @@ $(function () {
         $('#datetimepicker1').data("DateTimePicker").maxDate(e.date);
     });
 
+    $("#datetimepicker3").on("dp.change", function (e) {
+        $('#datetimepicker4').data("DateTimePicker").minDate(e.date);
+    });
+    $("#datetimepicker4").on("dp.change", function (e) {
+        $('#datetimepicker3').data("DateTimePicker").maxDate(e.date);
+    });
 
-    $(".hold-submit").on("click", function($e){
-        $form = $(this).closest("form");
-        if($form[0].checkValidity()){
-            $(this).hide();
-            $(this).next().show();
-            $form.submit();
-        }else{
-            $e.preventDefault();
+
+    $(".hold-submit").on("click", function ($e) {
+        var $form = $(this).closest("form");
+        $(".message").html("");
+        var date_ok = true;
+        if ($("#datetimepicker1").val() == "" || $("#datetimepicker2").val() == "") {
+            if ($("#datetimepicker3").val() == "" || $("#datetimepicker4").val() == "") {
+                $e.preventDefault();
+                $(".message").html("Veuillez renseigner soit une date de traitement, soit une date de contact");
+                date_ok = false;
+            }
         }
-
-
+        if (date_ok) {
+            if ($form[0].checkValidity()) {
+                $(this).hide();
+                $(this).next().show();
+                $form.submit();
+            } else {
+                $e.preventDefault();
+            }
+        }
 
 
     })
 })
 
 
-function updateOptions(){
-$(".options").each(function(){
-    $(this).closest("td").next().children().hide();
-    $value = $(this).find(":selected").val();
-    $(this).closest("td").next().find("[data-option='"+$value+"']").show();
+function updateOptions() {
+    $(".options").each(function () {
+        $(this).closest("td").next().children().hide();
+        $value = $(this).find(":selected").val();
+        $(this).closest("td").next().find("[data-option='" + $value + "']").show();
 
-});
+    });
 }
 

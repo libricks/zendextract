@@ -488,32 +488,55 @@ class ExtractionController extends Controller
      * @param   string $type
      * @return  TemplateResponse
      */
-    public function generate($extractionId, $from, $to, $type)
+    public function generate($extractionId, $fromTreatment, $toTreatment, $fromContact, $toContact, $type)
     {
+        //Récupération de l'extraction en BDD
         $extraction = $this->extractionMapper->find($extractionId);
         try {
+            //Récupération des formulaires de l'extraction
             $forms = $this->formMapper->findByExtractionId($extractionId);
 
             $tickets = array();
-            //   $query = "type:ticket created>2017-07-17 ";
+            //$query = "type:ticket created>2017-07-17 ";
             $query = "type:ticket";
+
+            //Filtrer les tickets par formulaire
             foreach ($forms as $form) {
                 $query = $query . " ticket_form_id:" . $form;
             }
 
-            $start = DateTime::createFromFormat('d/m/Y', $from);
-            $end = DateTime::createFromFormat('d/m/Y', $to);
 
-            while ($start <= $end) {
-                $query = $query . " custom_field_23982008:" . $start->format("Y-m-d ");
-                $start->modify("+1 day");
+
+            if ($toTreatment != "" && $fromTreatment != "") {
+                //Filtrer par date de traitement
+                $start = DateTime::createFromFormat('d/m/Y', $fromTreatment);
+                $end = DateTime::createFromFormat('d/m/Y', $toTreatment);
+
+                while ($start <= $end) {
+                    $query = $query . " custom_field_23982008:" . $start->format("Y-m-d ");
+                    $start->modify("+1 day");
+                }
             }
 
+            if ($fromContact != "" || $toContact != "") {
+                //Filtrer par date de contact
+                $start = DateTime::createFromFormat('d/m/Y', $fromContact);
+                $end = DateTime::createFromFormat('d/m/Y', $toContact);
+
+                while ($start <= $end) {
+                    $query = $query . " custom_field_22188285:" . $start->format("Y-m-d ");
+                    $start->modify("+1 day");
+                }
+            }
+
+
+            //Filtrer par type de tickets (information/réclémation)
             if ($type == "1") {
                 $query = $query . " custom_field_23964913:f_information";
             } else if ($type == "2") {
                 $query = $query . " custom_field_23964913:f_réclamation";
             }
+
 
             $result = $this->zendDeskAPI->get("/api/v2/search.json?query=" . urlencode($query));
             $tickets = $result->results;

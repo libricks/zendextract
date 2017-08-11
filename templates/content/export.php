@@ -1,6 +1,6 @@
 <h1>Exports</h1>
 
-<form class="form-inline" method="post" action="<?php echo $_["webRoot"] ?>/index.php/apps/zendextract/extraction/generate">
+<form class="" method="post" action="<?php echo $_["webRoot"] ?>/index.php/apps/zendextract/extraction/generate">
     <div class="form-group">
         <label for="extractions">Extraction</label>
         <select required id="extractions" name="extractionId" class="selectpicker"
@@ -13,15 +13,24 @@
             <?php endforeach; ?>
         </select>
     </div>
+    <h3>Date de traitement</h3>
     <div class="form-group">
         <label for="datetimepicker1">De</label>
-        <input required name="from" type='text' class="form-control" id="datetimepicker1"/>
+        <input name="fromTreatment" type='text' class="form-control" id="datetimepicker1"/>
     </div>
     <div class="form-group">
         <label for="datetimepicker2">A</label>
-        <input required name="to" type='text' class="form-control" id="datetimepicker2"/>
+        <input name="toTreatment" type='text' class="form-control" id="datetimepicker2"/>
     </div>
-
+    <h3>Date de contact</h3>
+    <div class="form-group">
+        <label for="datetimepicker3">De</label>
+        <input name="fromContact" type='text' class="form-control" id="datetimepicker3"/>
+    </div>
+    <div class="form-group">
+        <label for="datetimepicker4">A</label>
+        <input name="toContact" type='text' class="form-control" id="datetimepicker4"/>
+    </div>
 
     <div class="form-group">
         <label for="type">Type</label>
@@ -34,11 +43,14 @@
     </div>
 
     <div style="margin-top: 20px;">
-
+        <div>
+            <span class="message" style="color: red"></span>
+        </div>
         <button type="submit" class="btn btn-success hold-submit">Exporter</button>
         <div style="display: none;">
-            <img style="width: 50px" src="<?php print_unescaped(image_path('zendextract', 'spinner.gif'));?>"/>
-            Veuillez patienter pendant la création de votre fichier CSV. En fonction du nombre de résultats, cela peut durer plusieurs minutes
+            <img style="width: 50px" src="<?php print_unescaped(image_path('zendextract', 'spinner.gif')); ?>"/>
+            Veuillez patienter pendant la création de votre fichier CSV. En fonction du nombre de résultats, cela peut
+            durer plusieurs minutes
         </div>
     </div>
 </form>
