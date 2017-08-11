@@ -506,7 +506,7 @@ class ExtractionController extends Controller
      * @param   string $type
      * @return  TemplateResponse
      */
-    public function generate($extractionId, $fromTreatment, $toTreatment, $fromContact, $toContact)
+    public function generate($extractionId, $fromTreatment, $toTreatment, $fromContact, $toContact, $charset)
     {
 
 
@@ -549,12 +549,6 @@ class ExtractionController extends Controller
             }
 
 
-            //Filtrer par type de tickets (information/réclémation)
-            if ($type == "1") {
-                $query = $query . " custom_field_23964913:f_information";
-            } else if ($type == "2") {
-                $query = $query . " custom_field_23964913:f_réclamation";
-            }
 
 
             $result = $this->zendDeskAPI->get("/api/v2/search.json?query=" . urlencode($query));
@@ -578,10 +572,19 @@ class ExtractionController extends Controller
                 $columnsNames = $field->getColumnsNames();
                 $explode = explode(",", $columnsNames);
                 for ($i = 0; $i < $field->getNbColumns(); $i++) {
-                    $row[] = trim($explode[$i]);
+
+                    if($charset == "utf8"){
+                        $row[] = trim($explode[$i]);
+                    }else{
+                        $row[] = iconv("UTF-8", "windows-1252", trim($explode[$i]));
+                    }
                 }
             } else {
-                $row[] = $field->getColumnName();
+                if($charset == "utf8"){
+                    $row[] = $field->getColumnName();
+                }else{
+                    $row[] = iconv("UTF-8", "windows-1252", $field->getColumnName());
+                }
             }
         }
 
@@ -688,12 +691,26 @@ class ExtractionController extends Controller
                     }
                     $array_result = array_reverse($array_result);
                     for ($i = 0; $i < count($array_result); $i++) {
-                        $row[] = $array_result[$i];
+                        if($charset == "utf8"){
+                            $row[] = $array_result[$i];
+                        }else{
+                            $row[] = iconv("UTF-8", "windows-1252", $array_result[$i]);
+                        }
                     }
                 } else if ($field->getCustomFieldType() == 3) {
-                    $row[] = $field->getCustomText();
+
+                    if($charset == "utf8"){
+                        $row[] = $field->getCustomText();
+                    }else{
+                        $row[] = iconv("UTF-8", "windows-1252", $field->getCustomText());
+                    }
                 } else {
-                    $row[] = $value;
+                    if($charset == "utf8"){
+                        $row[] = $value;
+                    }else{
+                        $row[] = iconv("UTF-8", "windows-1252", $value);
+                    }
+
                 }
             }
             $arrayCSV[] = $row;

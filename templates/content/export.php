@@ -32,15 +32,14 @@
         <input name="toContact" type='text' class="form-control" id="datetimepicker4"/>
     </div>
 
-<!--    <div class="form-group">-->
-<!--        <label for="type">Type</label>-->
-<!--        <select id="type" data-selected-text-format="count" name="type" class="selectpicker"-->
-<!--                title="Sélectionner un type">-->
-<!--            <option value="0"></option>-->
-<!--            <option value="1">Information</option>-->
-<!--            <option value="2">Réclamation</option>-->
-<!--        </select>-->
-<!--    </div>-->
+    <div class="form-group">
+        <label for="type">Encodage</label>
+        <select id="type" data-selected-text-format="count" name="charset" class="selectpicker"
+                title="Sélectionner un type">
+            <option value="windows">Windows-1252 (Excel)</option>
+            <option value="utf8">UTF8</option>
+        </select>
+    </div>
 
     <div style="margin-top: 20px;">
         <div>
