@@ -506,7 +506,7 @@ class ExtractionController extends Controller
      * @param   string $type
      * @return  TemplateResponse
      */
-    public function generate($extractionId, $fromTreatment, $toTreatment, $fromContact, $toContact, $type)
+    public function generate($extractionId, $fromTreatment, $toTreatment, $fromContact, $toContact)
     {
 
 

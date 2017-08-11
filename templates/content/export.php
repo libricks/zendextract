@@ -32,15 +32,15 @@
         <input name="toContact" type='text' class="form-control" id="datetimepicker4"/>
     </div>
 
-    <div class="form-group">
-        <label for="type">Type</label>
-        <select id="type" data-selected-text-format="count" name="type" class="selectpicker"
-                title="Sélectionner un type">
-            <option value="0"></option>
-            <option value="1">Information</option>
-            <option value="2">Réclamation</option>
-        </select>
-    </div>
+<!--    <div class="form-group">-->
+<!--        <label for="type">Type</label>-->
+<!--        <select id="type" data-selected-text-format="count" name="type" class="selectpicker"-->
+<!--                title="Sélectionner un type">-->
+<!--            <option value="0"></option>-->
+<!--            <option value="1">Information</option>-->
+<!--            <option value="2">Réclamation</option>-->
+<!--        </select>-->
+<!--    </div>-->
 
     <div style="margin-top: 20px;">
         <div>
