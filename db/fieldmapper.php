@@ -73,20 +73,34 @@ class FieldMapper extends Mapper
      */
     public function findAllByExtractionId($extractionId, $selected = false)
     {
-
-        $sql = "
+if($selected){
+    $sql = "
            
                     SELECT fields.*, forms.name as formname
                     FROM `*PREFIX*zendextract_fields` as fields 
                     INNER JOIN `*PREFIX*zendextract_extractions` as extractions ON extractions.id = fields.extraction_id
                     LEFT JOIN `*PREFIX*zendextract_forms` as forms ON forms.id = fields.form_id
-                    WHERE fields.extraction_id = ? AND fields.is_active = ?
+                    WHERE fields.extraction_id = ? AND fields.is_active = 1
+                   ORDER BY fields.order_index
+                   
+         ";
+}else{
+    $sql = "
+           
+                    SELECT fields.*, forms.name as formname
+                    FROM `*PREFIX*zendextract_fields` as fields 
+                    INNER JOIN `*PREFIX*zendextract_extractions` as extractions ON extractions.id = fields.extraction_id
+                    LEFT JOIN `*PREFIX*zendextract_forms` as forms ON forms.id = fields.form_id
+                    WHERE fields.extraction_id = ?
                    ORDER BY fields.order_index
                    
          ";
 
+}
 
-        $stmt = $this->execute($sql, [$extractionId, $selected ]);
+        $stmt = $this->execute($sql, [$extractionId ]);
+
+
 
         $fields = array();
         while ($row = $stmt->fetch()) {
