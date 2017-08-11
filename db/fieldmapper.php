@@ -68,47 +68,25 @@ class FieldMapper extends Mapper
      *
      * @access  public
      * @param   integer $extractionId
-     * @param   boolean $selected, active fields or all fields
+     * @param   boolean $selected , active fields or all fields
      * @return  Array, tableau des fields
      */
     public function findAllByExtractionId($extractionId, $selected = false)
     {
 
-        if ($selected) {
-            $sql = "
-                SELECT * FROM (
-                    SELECT fields.*, NULL as formname
-                    FROM `*PREFIX*zendextract_fields` as fields 
-                    INNER JOIN `*PREFIX*zendextract_extractions` as extractions ON extractions.id = fields.extraction_id
-                    WHERE fields.extraction_id = ? AND fields.is_active = true
-                    UNION
+        $sql = "
+           
                     SELECT fields.*, forms.name as formname
                     FROM `*PREFIX*zendextract_fields` as fields 
-                    INNER JOIN `*PREFIX*zendextract_forms` as forms ON forms.id = fields.form_id
-                    WHERE forms.extraction_id = ? AND fields.is_active = true
-                ) as t1   
-                ORDER BY t1.order_index
+                    INNER JOIN `*PREFIX*zendextract_extractions` as extractions ON extractions.id = fields.extraction_id
+                    LEFT JOIN `*PREFIX*zendextract_forms` as forms ON forms.id = fields.form_id
+                    WHERE fields.extraction_id = ? AND fields.is_active = ?
+                   ORDER BY fields.order_index
+                   
          ";
 
 
-        } else {
-            $sql = '
-                SELECT * FROM (
-                    SELECT fields.*, NULL as formname
-                    FROM `*PREFIX*zendextract_fields` as fields 
-                    INNER JOIN `*PREFIX*zendextract_extractions` as extractions ON extractions.id = fields.extraction_id
-                    WHERE fields.extraction_id = ? 
-                    UNION
-                    SELECT fields.*, forms.name as formname
-                    FROM `*PREFIX*zendextract_fields` as fields 
-                    INNER JOIN `*PREFIX*zendextract_forms` as forms ON forms.id = fields.form_id
-                    WHERE forms.extraction_id = ?
-                ) as t1
-                ORDER BY t1.order_index 
-                ';
-        }
-
-        $stmt = $this->execute($sql, [$extractionId, $extractionId]);
+        $stmt = $this->execute($sql, [$extractionId, $selected ]);
 
         $fields = array();
         while ($row = $stmt->fetch()) {
@@ -140,34 +118,40 @@ class FieldMapper extends Mapper
         return $fields;
     }
 
-    public function findByFormAndFieldId($formId, $fieldId)
+    public function findByExtractionAndFieldId($extractionId, $fieldId)
     {
         $sql = 'SELECT * FROM `*PREFIX*zendextract_fields` ' .
-            'WHERE `form_id` = ? AND field_id = ?';
+            'WHERE `extraction_id` = ? AND field_id = ?';
 
-        $stmt = $this->execute($sql, [$formId, $fieldId]);
+        $stmt = $this->execute($sql, [$extractionId, $fieldId]);
 
         $row = $stmt->fetch();
-        $stmt->closeCursor();
+
 
         if (!$row) {
+            $stmt->closeCursor();
             return null;
         }
-        $f = new Field();
-        $f->setFieldId($row["field_id"]);
-        $f->id($row["id"]);
-//        $f->setFormId();
-//        $f->setFiedId();
-//        $f->setOrderIndex();
-//        $f->setTitle();
-//        $f->setType();
-//        $f->setColumnName();
-//        $f->setCustomFieldType();
-//        $f->setDateFormat();
-//        $f->setNbColmuns();
-//        $f->setColumnsNames();
-//        $f->setIsActive();
 
+        $f = new Field();
+
+        $f->setFieldId($row["field_id"]);
+        $f->id = $row["id"];
+        $f->setFormId($row["form_id"]);
+        $f->setExtractionId($row["extraction_id"]);
+        $f->setFieldId($row["field_id"]);
+        $f->setOrderIndex($row["order_index"]);
+        $f->setTitle($row["title"]);
+        $f->setType($row["type"]);
+        $f->setColumnName($row["column_name"]);
+        $f->setCustomFieldType($row["custom_field_type"]);
+        $f->setDateFormat($row["date_format"]);
+        $f->setNbColumns($row["nb_columns"]);
+        $f->setColumnsNames($row["columns_names"]);
+        $f->setCustomText($row["custom_text"]);
+        $f->setIsActive($row["is_active"]);
+        $f->setFormName($row["formname"]);
+        $stmt->closeCursor();
         return $f;
     }
 

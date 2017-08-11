@@ -359,12 +359,11 @@ class ExtractionController extends Controller
             $form->setFormId($result->ticket_form->id);
             $this->formMapper->insert($form);
 
-
             $fields = $result->ticket_form->ticket_field_ids;
 
             foreach ($fields as $field) {
                 $field = $this->zendDeskAPI->get("/api/v2/ticket_fields/$field.json");
-                $database_field = $this->fieldMapper->findByFormAndFieldId($field->ticket_field->id, $f->id);
+                $database_field = $this->fieldMapper->findByExtractionAndFieldId($extraction->getId(), $field->ticket_field->id);
 
                 if ($database_field == null) {
                     $f = new Field();
@@ -376,11 +375,13 @@ class ExtractionController extends Controller
                     $f->setType($field->ticket_field->type);
                     $f->setIsActive(false);
                     $f->setOrderIndex($order_index++);
+                    $f->setExtractionId($extraction->getId());
                     $this->fieldMapper->insert($f);
                 } else {
-                    $database_field->setFiedId($field->ticket_field->id);
+                    $database_field->setFieldId($field->ticket_field->id);
                     $database_field->setTitle($field->ticket_field->title);
                     $database_field->setType($field->ticket_field->type);
+                   $database_field->setFormId(0);
                     $this->fieldMapper->update($database_field);
                 }
             }
