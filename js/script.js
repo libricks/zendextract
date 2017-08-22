@@ -49,6 +49,18 @@ $(function () {
         useCurrent: false
     });
 
+    $('#datetimepicker5').datetimepicker({
+        locale: 'fr-FR',
+        format: 'l',
+        useCurrent: false
+    });
+
+    $('#datetimepicker6').datetimepicker({
+        locale: 'fr-FR',
+        format: 'l',
+        useCurrent: false
+    });
+
     $("#datetimepicker1").on("dp.change", function (e) {
         $('#datetimepicker2').data("DateTimePicker").minDate(e.date);
     });
@@ -63,6 +75,13 @@ $(function () {
         $('#datetimepicker3').data("DateTimePicker").maxDate(e.date);
     });
 
+    $("#datetimepicker5").on("dp.change", function (e) {
+        $('#datetimepicker6').data("DateTimePicker").minDate(e.date);
+    });
+    $("#datetimepicker6").on("dp.change", function (e) {
+        $('#datetimepicker5').data("DateTimePicker").maxDate(e.date);
+    });
+
 
     $(".hold-submit").on("click", function ($e) {
         var $form = $(this).closest("form");
@@ -70,9 +89,11 @@ $(function () {
         var date_ok = true;
         if ($("#datetimepicker1").val() == "" || $("#datetimepicker2").val() == "") {
             if ($("#datetimepicker3").val() == "" || $("#datetimepicker4").val() == "") {
-                $e.preventDefault();
-                $(".message").html("Veuillez renseigner soit une date de traitement, soit une date de contact");
-                date_ok = false;
+                if ($("#datetimepicker5").val() == "" || $("#datetimepicker6").val() == "") {
+                    $e.preventDefault();
+                    $(".message").html("Veuillez renseigner soit une date de traitement, soit une date de contact, soit une date de création");
+                    date_ok = false;
+                }
             }
         }
         if (date_ok) {

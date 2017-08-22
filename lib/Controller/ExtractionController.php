@@ -506,7 +506,7 @@ class ExtractionController extends Controller
      * @param   string $type
      * @return  TemplateResponse
      */
-    public function generate($extractionId, $fromTreatment, $toTreatment, $fromContact, $toContact, $charset)
+    public function generate($extractionId, $fromTreatment, $toTreatment, $fromContact, $toContact, $fromCreate, $toCreate, $charset)
     {
 
 
@@ -548,7 +548,13 @@ class ExtractionController extends Controller
                 }
             }
 
+            if ($fromCreate != "" || $toCreate != "") {
+                //Filtrer par date de contact
+                $start = DateTime::createFromFormat('d/m/Y', $fromCreate);
+                $end = DateTime::createFromFormat('d/m/Y', $toCreate);
 
+                $query = $query . " created>" . $start->format("Y-m-d "). " created<" . $end->format("Y-m-d ");
+            }
 
 
             $result = $this->zendDeskAPI->get("/api/v2/search.json?query=" . urlencode($query));

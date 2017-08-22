@@ -32,6 +32,16 @@
         <input name="toContact" type='text' class="form-control" id="datetimepicker4"/>
     </div>
 
+    <h3>Date de création</h3>
+    <div class="form-group">
+        <label for="datetimepicker5">De</label>
+        <input name="fromCreate" type='text' class="form-control" id="datetimepicker5"/>
+    </div>
+    <div class="form-group">
+        <label for="datetimepicker6">A</label>
+        <input name="toCreate" type='text' class="form-control" id="datetimepicker6"/>
+    </div>
+
     <div class="form-group">
         <label for="type">Encodage</label>
         <select id="type" data-selected-text-format="count" name="charset" class="selectpicker"
