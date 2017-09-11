@@ -194,15 +194,15 @@ class ExtractionController extends Controller
         $extraction = $this->extractionMapper->find($id);
         if ($step == 1) {
 
-            $all_forms = $this->zendDeskAPI->get("/api/v2/ticket_forms.json");
-            $selected_forms_ids = $this->formMapper->findByExtractionId($id);
+            // $all_forms = $this->zendDeskAPI->get("/api/v2/ticket_forms.json");
+            //$selected_forms_ids = $this->formMapper->findByExtractionId($id);
 
             return new TemplateResponse('zendextract', 'index', array(
                     'webRoot' => $this->webRoot,
                     'view' => "step1",
                     'step' => 1,
-                    'forms' => $all_forms,
-                    'selected_forms_ids' => $selected_forms_ids,
+                    //      'forms' => $all_forms,
+                    //    'selected_forms_ids' => $selected_forms_ids,
                     'extraction' => $extraction)
             );  // templates/index.php
 
@@ -211,6 +211,7 @@ class ExtractionController extends Controller
 
             return new TemplateResponse('zendextract', 'index',
                 array(
+                    'mode' => 'edit',
                     'webRoot' => $this->webRoot,
                     'view' => "step2",
                     'step' => $step,
@@ -245,6 +246,7 @@ class ExtractionController extends Controller
         $all_forms = $this->zendDeskAPI->get("/api/v2/ticket_forms.json");
 
         return new TemplateResponse('zendextract', 'index', array(
+                'mode' => 'create',
                 'webRoot' => $this->webRoot,
                 'view' => "step1",
                 'forms' => $all_forms,
@@ -310,13 +312,13 @@ class ExtractionController extends Controller
      * @param   integer $id |null
      * @return  RedirectResponse
      */
-    public function step1POST($name, $forms, $defaultpath = "", $id = null)
+    public function step1POST($name, $forms, $defaultpath = "", $mode, $id = null)
     {
 
         //Création de l'extraction
-        if ($id === null) {
-            $extraction = $this->extractionMapper->find($id);
-        } else {
+
+        if ($mode == "create") {
+            //Création des champs de base
             try {
                 $e = new Extraction();
                 $e->setName($name);
@@ -327,77 +329,81 @@ class ExtractionController extends Controller
                 $this->logger->error("Extraction déjà créée " . $e->getMessage(), array('app' => $this->appName));
                 return new RedirectResponse($this->webRoot . '/index.php/apps/zendextract/');
             }
-        }
-        $order_index = 1000;
-        //Création des champs de base
-        if ($id == null) {
+            $order_index = 1000;
 
-            $base_fields = array("id", "form_name", "channel", "created_at", "modified_at", "type", "subject", "description", "status", "recipient");
+            if ($id == null) {
 
-            foreach ($base_fields as $title) {
-                $f = new Field();
-                $f->setExtractionId($extraction->getId());
-                $f->setTitle($title);
-                $f->setColumnName($title);
-                $f->setType("base");
-                $f->setIsActive(false);
-                $f->setOrderIndex($order_index++);
-                $this->fieldMapper->insert($f);
-            }
+                $base_fields = array("id", "form_name", "channel", "created_at", "modified_at", "type", "subject", "description", "status", "recipient");
 
-            $conversation_fields = array("conversation niveau 2", "conversation niveau 3");
-
-            foreach ($conversation_fields as $title) {
-                $f = new Field();
-                $f->setExtractionId($extraction->getId());
-                $f->setTitle($title);
-                $f->setColumnName($title);
-                $f->setType("conversation");
-                $f->setIsActive(false);
-                $f->setOrderIndex($order_index++);
-                $this->fieldMapper->insert($f);
-            }
-        }
-
-
-        //Création des champs pour chaque formulaire
-        foreach ($forms as $form) {
-            $result = $this->zendDeskAPI->get("/api/v2/ticket_forms/$form.json");
-
-            $form = new Form();
-            $f->setFormId($form->getId());
-            $form->setName($result->ticket_form->name);
-            $form->setDisplayName($result->ticket_form->display_name);
-            $form->setExtractionId($extraction->getId());
-            $form->setFormId($result->ticket_form->id);
-            $this->formMapper->insert($form);
-
-            $fields = $result->ticket_form->ticket_field_ids;
-
-            foreach ($fields as $field) {
-                $field = $this->zendDeskAPI->get("/api/v2/ticket_fields/$field.json");
-                $database_field = $this->fieldMapper->findByExtractionAndFieldId($extraction->getId(), $field->ticket_field->id);
-
-                if ($database_field == null) {
+                foreach ($base_fields as $title) {
                     $f = new Field();
-
-                    $f->setFormId($form->getId());
-                    $f->setFieldId($field->ticket_field->id);
-                    $f->setTitle($field->ticket_field->title);
-                    $f->setColumnName($field->ticket_field->title);
-                    $f->setType($field->ticket_field->type);
+                    $f->setExtractionId($extraction->getId());
+                    $f->setTitle($title);
+                    $f->setColumnName($title);
+                    $f->setType("base");
                     $f->setIsActive(false);
                     $f->setOrderIndex($order_index++);
-                    $f->setExtractionId($extraction->getId());
                     $this->fieldMapper->insert($f);
-                } else {
-                    $database_field->setFieldId($field->ticket_field->id);
-                    $database_field->setTitle($field->ticket_field->title);
-                    $database_field->setType($field->ticket_field->type);
-                    $database_field->setFormId(0);
-                    $this->fieldMapper->update($database_field);
+                }
+
+                $conversation_fields = array("conversation niveau 2", "conversation niveau 3");
+
+                foreach ($conversation_fields as $title) {
+                    $f = new Field();
+                    $f->setExtractionId($extraction->getId());
+                    $f->setTitle($title);
+                    $f->setColumnName($title);
+                    $f->setType("conversation");
+                    $f->setIsActive(false);
+                    $f->setOrderIndex($order_index++);
+                    $this->fieldMapper->insert($f);
                 }
             }
+
+
+            //Création des champs pour chaque formulaire
+            foreach ($forms as $form) {
+                $result = $this->zendDeskAPI->get("/api/v2/ticket_forms/$form.json");
+
+                $form = new Form();
+                $f->setFormId($form->getId());
+                $form->setName($result->ticket_form->name);
+                $form->setDisplayName($result->ticket_form->display_name);
+                $form->setExtractionId($extraction->getId());
+                $form->setFormId($result->ticket_form->id);
+                $this->formMapper->insert($form);
+
+                $fields = $result->ticket_form->ticket_field_ids;
+
+                foreach ($fields as $field) {
+                    $field = $this->zendDeskAPI->get("/api/v2/ticket_fields/$field.json");
+                    $database_field = $this->fieldMapper->findByExtractionAndFieldId($extraction->getId(), $field->ticket_field->id);
+
+                    if ($database_field == null) {
+                        $f = new Field();
+
+                        $f->setFormId($form->getId());
+                        $f->setFieldId($field->ticket_field->id);
+                        $f->setTitle($field->ticket_field->title);
+                        $f->setColumnName($field->ticket_field->title);
+                        $f->setType($field->ticket_field->type);
+                        $f->setIsActive(false);
+                        $f->setOrderIndex($order_index++);
+                        $f->setExtractionId($extraction->getId());
+                        $this->fieldMapper->insert($f);
+                    } else {
+                        $database_field->setFieldId($field->ticket_field->id);
+                        $database_field->setTitle($field->ticket_field->title);
+                        $database_field->setType($field->ticket_field->type);
+                        $database_field->setFormId(0);
+                        $this->fieldMapper->update($database_field);
+                    }
+                }
+            }
+        } else {
+            $extraction = $this->extractionMapper->find($id);
+            $extraction->setName($name);
+            $this->extractionMapper->update($extraction);
         }
         return new RedirectResponse($this->webRoot . "/index.php/apps/zendextract/extraction/step/2/" . $extraction->id);
     }
@@ -456,6 +462,9 @@ class ExtractionController extends Controller
             $f->setDateFormat($field["date_format"]);
             $f->setNbColumns($field["nb_columns"]);
             $f->setColumnsNames($field["columns_names"]);
+
+            $f->setIsMerged(($field["is_merged"] == "on"));
+            $f->setMergeName($field["merge_name"]);
             $f->setOrderIndex($i);
 
             $this->fieldMapper->update($f);
@@ -526,6 +535,11 @@ class ExtractionController extends Controller
             }
 
 
+            //Variables pour le nom du fichier CSV
+            $week_from = 0;
+            $week_to = 0;
+            $year = 0;
+
             if ($toTreatment != "" && $fromTreatment != "") {
                 //Filtrer par date de traitement
                 $start = DateTime::createFromFormat('d/m/Y', $fromTreatment);
@@ -535,6 +549,10 @@ class ExtractionController extends Controller
                     $query = $query . " custom_field_23982008:" . $start->format("Y-m-d ");
                     $start->modify("+1 day");
                 }
+
+                $week_from = $start->format("W");
+                $week_to = $end->format("W");
+                $year = $start->format("Y");
             }
 
             if ($fromContact != "" || $toContact != "") {
@@ -546,178 +564,230 @@ class ExtractionController extends Controller
                     $query = $query . " custom_field_22188285:" . $start->format("Y-m-d ");
                     $start->modify("+1 day");
                 }
+
+                $week_from = $start->format("W");
+                $week_to = $end->format("W");
+                $year = $start->format("Y");
             }
 
             if ($fromCreate != "" || $toCreate != "") {
-                //Filtrer par date de contact
+                //Filtrer par date de création
                 $start = DateTime::createFromFormat('d/m/Y', $fromCreate);
                 $end = DateTime::createFromFormat('d/m/Y', $toCreate);
 
-                $query = $query . " created>" . $start->format("Y-m-d "). " created<" . $end->format("Y-m-d ");
+                $query = $query . " created>" . $start->format("Y-m-d ") . " created<" . $end->format("Y-m-d ");
+
+                $week_from = $start->format("W");
+                $week_to = $end->format("W");
+                $year = $start->format("Y");
             }
 
 
+            //Récupération de tous les tickets
             $result = $this->zendDeskAPI->get("/api/v2/search.json?query=" . urlencode($query));
             $tickets = $result->results;
 
+
+            //S'il y a une pagination des résulats récupération de tous les tickets paginés
             while ($result->next_page != null) {
                 $result = $this->zendDeskAPI->getAbsolute($result->next_page);
                 $tickets = array_merge($tickets, $result->results);
             }
 
         } catch (Httpful\Exception $e) {
+
             $this->logger->error("Problème lors de la récupération des tickets " . $e->getMessage(), array('app' => $this->appName));
         }
+
+        //Récupération des champs de l'extraction
         $fields = $this->fieldMapper->findAllByExtractionId($extractionId, true);
 
         $arrayCSV = array();
         $row = array();
 
-        foreach ($fields as $field) {
-            if ($field->getCustomFieldType() == 2) {
-                $columnsNames = $field->getColumnsNames();
-                $explode = explode(",", $columnsNames);
-                for ($i = 0; $i < $field->getNbColumns(); $i++) {
 
-                    if($charset == "utf8"){
-                        $row[] = trim($explode[$i]);
-                    }else{
-                        $row[] = iconv("UTF-8", "windows-1252", trim($explode[$i]));
+        //Ecriture de la lgine des titres
+
+        $mergeName = "";
+        foreach ($fields as $field) {
+
+            if (!$field->getIsMerged() || $mergeName != $field->getMergeName()) {
+                if ($field->getCustomFieldType() == 2) {
+                    $columnsNames = $field->getColumnsNames();
+                    $explode = explode(",", $columnsNames);
+                    for ($i = 0; $i < $field->getNbColumns(); $i++) {
+
+                        if ($charset == "utf8") {
+                            $row[] = trim($explode[$i]);
+                        } else {
+                            $row[] = iconv("UTF-8", "windows-1252", trim($explode[$i]));
+                        }
+                    }
+                } else {
+                    if ($charset == "utf8") {
+                        $row[] = $field->getColumnName();
+                    } else {
+                        $row[] = iconv("UTF-8", "windows-1252", $field->getColumnName());
                     }
                 }
-            } else {
-                if($charset == "utf8"){
-                    $row[] = $field->getColumnName();
-                }else{
-                    $row[] = iconv("UTF-8", "windows-1252", $field->getColumnName());
-                }
             }
+            $mergeName = $field->getMergeName();
         }
 
         $arrayCSV[] = $row;
         $customFieldsOptions = array();
 
+
+        //Pour chaque ticket
+        $mergeName = "";
         foreach ($tickets as $ticket) {
 
             $row = array();
             $value = "";
 
             foreach ($fields as $field) {
-                if ($field->getType() == "base") {
-                    switch ($field->getTitle()) {
-                        case "id":
-                            $value = $ticket->id;
-                            break;
-                        case "form_name":
-                            $form = $this->zendDeskAPI->get("/api/v2/ticket_forms/" . $ticket->ticket_form_id . ".json");
-                            $value = $form->ticket_form->name;
-                            break;
-                        case "channel":
-                            $value = $ticket->via->channel;
-                            break;
-                        case "created_at":
-                            $value = $ticket->created_at;
-                            break;
-                        case "modified_at":
-                            $value = $ticket->modified_at;
-                            break;
-                        case "type":
-                            $value = $ticket->type;
-                            break;
-                        case "subject":
-                            $value = $ticket->subject;
-                            break;
-                        case "description":
-                            $value = $ticket->description;
-                            break;
-                        case "status":
-                            $value = $ticket->status;
-                            break;
-                        case "recipient":
-                            $value = $ticket->recipient;
-                            break;
-                    }
-
-                } else if ($field->getType() == "conversation") {
-                    if (array_key_exists($ticket->id, $this->convesations)) {
-                        $conversation = $this->convesations[$ticket->id];
-                    } else {
-                        $conversation = $this->zendDeskAPI->get("/api/v2/tickets/" . $ticket->id . "/comments.json");
-                        $this->convesations[$ticket->id] = $conversation;
-                    }
-                    if ($field->getTitle() == "conversation niveau 2") {
-                        if (count($conversation->comments) >= 2)
-                            $value = $conversation->comments[1]->body;
-                        else{
-                            $value = "";
-                        }
-                    } else if ($field->getTitle() == "conversation niveau 3") {
-                        if (count($conversation->comments) >= 3)
-                            $value = $conversation->comments[2]->body;
-                        else{
-                            $value = "";
-                        }
-                    }
-
-                } else {
-                    $value = $this->customfieldsSearch($ticket, $field->getFieldId(), $extractionId);
+                if ($field->getIsMerged()) {
+                    $form = $this->formMapper->find($field->getFormId());
                 }
 
-                if ($field->getCustomFieldType() == 1) {
-                    setlocale(LC_TIME, "fr_FR");
-                    $value = strftime($field->getDateFormat(), (new DateTime($value))->getTimestamp());
-                    $row[] = $value;
-                } else if ($field->getCustomFieldType() == 2) {
+                if (!$field->getIsMerged() || $form->getFormId() == $ticket->ticket_form_id) {
+                    if ($field->getType() == "base") {
+                        switch ($field->getTitle()) {
+                            case "id":
+                                $value = $ticket->id;
+                                break;
+                            case "form_name":
+                                $form = $this->zendDeskAPI->get("/api/v2/ticket_forms/" . $ticket->ticket_form_id . ".json");
+                                $value = $form->ticket_form->name;
+                                break;
+                            case "channel":
+                                $value = $ticket->via->channel;
+                                break;
+                            case "created_at":
+                                $value = $ticket->created_at;
+                                break;
+                            case "modified_at":
+                                $value = $ticket->modified_at;
+                                break;
+                            case "type":
+                                $value = $ticket->type;
+                                break;
+                            case "subject":
+                                $value = $ticket->subject;
+                                break;
+                            case "description":
+                                $value = $ticket->description;
+                                break;
+                            case "status":
+                                $value = $ticket->status;
+                                break;
+                            case "recipient":
+                                $value = $ticket->recipient;
+                                break;
+                        }
 
-                    $options = array();
-                    if (array_key_exists($field->getFieldId(), $customFieldsOptions)) {
-                        $options = $customFieldsOptions[$field->getFieldId()];
+                    } else if ($field->getType() == "conversation") {
+                        if (array_key_exists($ticket->id, $this->convesations)) {
+                            $conversation = $this->convesations[$ticket->id];
+                        } else {
+                            $conversation = $this->zendDeskAPI->get("/api/v2/tickets/" . $ticket->id . "/comments.json");
+                            $this->convesations[$ticket->id] = $conversation;
+                        }
+                        if ($field->getTitle() == "conversation niveau 2") {
+                            if (count($conversation->comments) >= 2)
+                                $value = $conversation->comments[1]->body;
+                            else {
+                                $value = "";
+                            }
+                        } else if ($field->getTitle() == "conversation niveau 3") {
+                            if (count($conversation->comments) >= 3)
+                                $value = $conversation->comments[2]->body;
+                            else {
+                                $value = "";
+                            }
+                        }
+
+
                     } else {
-                        $result = $this->zendDeskAPI->get("/api/v2/ticket_fields/" . $field->getFieldId() . ".json");
-                        $customFieldsOptions[$field->getFieldId()] = $result->ticket_field->custom_field_options;
-                        $options = $customFieldsOptions[$field->getFieldId()];
+                        $value = $this->customfieldsSearch($ticket, $field->getFieldId(), $extractionId);
                     }
-                    $found = 0;
-                    $i = 0;
-
-                    while (!$found && $i < count($options)) {
-                        if ($options[$i]->value == $value) {
-                            $value = $options[$i]->name;
-                            $found = 1;
-                        }
-                        $i++;
+                    $value = trim(preg_replace('/\s+/', ' ', $value));
+                    if ($value == "31/12/1969") {
+                        $value = "";
                     }
 
-                    $explode = explode("::", $value);
-                    $explode = array_reverse($explode);
-                    $explode = array_slice($explode, 0, $field->getNbColumns());
-                    $array_result = array();
-                    for ($i = 0; $i < $field->getNbColumns(); $i++) {
-                        $array_result[] = $explode[$i];
+                    if ($field->getType() == "tagger" && $value == "1") {
+                        $value = "Oui";
                     }
-                    $array_result = array_reverse($array_result);
-                    for ($i = 0; $i < count($array_result); $i++) {
-                        if($charset == "utf8"){
-                            $row[] = $array_result[$i];
-                        }else{
-                            $row[] = iconv("UTF-8", "windows-1252", $array_result[$i]);
-                        }
-                    }
-                } else if ($field->getCustomFieldType() == 3) {
 
-                    if($charset == "utf8"){
-                        $row[] = $field->getCustomText();
-                    }else{
-                        $row[] = iconv("UTF-8", "windows-1252", $field->getCustomText());
-                    }
-                } else {
-                    if($charset == "utf8"){
+                    //Transformation de date
+
+
+                    if ($field->getCustomFieldType() == 1) {
+                        setlocale(LC_TIME, "fr_FR");
+                        $value = strftime($field->getDateFormat(), (new DateTime($value))->getTimestamp());
                         $row[] = $value;
-                    }else{
-                        $row[] = iconv("UTF-8", "windows-1252", $value);
-                    }
+                        //Transformation liste ::
+                    } else if ($field->getCustomFieldType() == 2) {
 
+                        $options = array();
+                        if (array_key_exists($field->getFieldId(), $customFieldsOptions)) {
+                            $options = $customFieldsOptions[$field->getFieldId()];
+                        } else {
+                            $result = $this->zendDeskAPI->get("/api/v2/ticket_fields/" . $field->getFieldId() . ".json");
+                            $customFieldsOptions[$field->getFieldId()] = $result->ticket_field->custom_field_options;
+                            $options = $customFieldsOptions[$field->getFieldId()];
+                        }
+                        $found = false;
+                        $i = 0;
+
+                        while (!$found && $i < count($options)) {
+                            if ($options[$i]->value == $value) {
+                                $value = $options[$i]->name;
+                                $found = true;
+                            }
+                            $i++;
+                        }
+
+                        $explode = explode("::", $value);
+                        $explode = array_reverse($explode);
+                        $explode = array_slice($explode, 0, $field->getNbColumns());
+                        $explode = array_reverse($explode);
+                        $array_result = array();
+                        for ($i = 0; $i < $field->getNbColumns(); $i++) {
+                            if (isset($explode[$i]))
+                                $array_result[] = $explode[$i];
+                            else
+                                $array_result[] = "";
+                        }
+                        for ($i = 0; $i < count($array_result); $i++) {
+                            if ($charset == "utf8") {
+                                $row[] = $array_result[$i];
+                            } else {
+                                $row[] = iconv("UTF-8", "windows-1252", $array_result[$i]);
+                            }
+                        }
+
+                        //Transformation valeur fixe
+                    } else if ($field->getCustomFieldType() == 3) {
+
+                        if ($charset == "utf8") {
+                            $row[] = $field->getCustomText();
+                        } else {
+                            $row[] = iconv("UTF-8", "windows-1252", $field->getCustomText());
+                        }
+
+                        //Pas de transformation
+                    } else {
+                        if ($charset == "utf8") {
+                            $row[] = $value;
+                        } else {
+                            $row[] = iconv("UTF-8", "windows-1252", $value);
+                        }
+
+                    }
                 }
+                $mergeName = $field->getMergeName();
             }
             $arrayCSV[] = $row;
         }
@@ -734,8 +804,15 @@ class ExtractionController extends Controller
             $folder = \OC::$server->getRootFolder()->get($this->userId . "/files/Extractions/")->newFolder($extraction->getName());
         }
 
+        $extraction = $this->extractionMapper->find($extractionId);
+
+
         $dt = new DateTime();
-        $filename = $dt->format('Y-m-d H:i:s');
+        //$filename = $dt->format('Y-m-d H:i:s');
+        if ($week_to == $week_from)
+            $filename = $extraction->getName() . " -  semaine " . $week_from . " (" . $year . ")";
+        else
+            $filename = $extraction->getName() . " -  semaines " . $week_from . " à " . $week_to . " (" . $year . ")";
         $file = $folder->newFile($filename . ".csv");
         $fileResource = $file->fopen('w');
 

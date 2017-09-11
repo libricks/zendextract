@@ -35,7 +35,7 @@ class ZendDeskAPI
 
     public function get($endpoint, $params)
     {
-
+        $response = "";
         try {
 
             $response = \Httpful\Request::get($this->uri . $endpoint)
@@ -44,8 +44,11 @@ class ZendDeskAPI
                 ->send();
             $result = $response->body;
             return $result;
+        } catch (Httpful\Exception $e) {
+                $this->logger->error("Problème lors de la récupération des tickets " . $e->getMessage(), array('app' => $this->appName));
+
         } catch (Exception $e) {
-            return null;
+            $this->logger->error("Problème API : " . $e->getMessage() . " ---------" . $response, array('app' => $this->appName));
         }
     }
 

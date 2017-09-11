@@ -12,7 +12,7 @@
             <td><?php echo $extraction->getName() ?></td>
 
             <td>
-                <a  class="btn btn-warning" href="<?php echo $_["webRoot"] ?>/index.php/apps/zendextract/extraction/step/2/<?php echo $extraction->id ?>">
+                <a  class="btn btn-warning" href="<?php echo $_["webRoot"] ?>/index.php/apps/zendextract/extraction/step/1/<?php echo $extraction->id ?>">
                     <i class="fa fa-pencil" aria-hidden="true"></i>  Modifier
                 </a>
                 <a class="btn btn-info" href="<?php echo $_["webRoot"] ?>/index.php/apps/zendextract/export?id=<?php echo $extraction->id ?>">

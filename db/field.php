@@ -32,7 +32,8 @@ class Field extends Entity
     protected $columnsNames;
     protected $customText;
     protected $isActive;
-
+    protected $isMerged;
+    protected $mergeName;
     protected $formName;
 
     public function __construct() {

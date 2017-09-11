@@ -175,6 +175,15 @@
                 <name>is_active</name>
                 <type>boolean</type>
             </field>
+            <field>
+                <name>is_merged</name>
+                <type>boolean</type>
+            </field>
+            <field>
+                <name>merge_name</name>
+                <type>text</type>
+                <length>100</length>
+            </field>
             <index>
 
                 <name>formid_index</name>

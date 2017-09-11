@@ -122,6 +122,8 @@ if($selected){
             $f->setColumnsNames($row["columns_names"]);
             $f->setCustomText($row["custom_text"]);
             $f->setIsActive($row["is_active"]);
+            $f->setIsMerged($row["is_merged"]);
+            $f->setMergeName($row["merge_name"]);
             $f->setFormName($row["formname"]);
             $fields[] = $f;
 
@@ -164,6 +166,8 @@ if($selected){
         $f->setColumnsNames($row["columns_names"]);
         $f->setCustomText($row["custom_text"]);
         $f->setIsActive($row["is_active"]);
+        $f->setIsMerged($row["is_merged"]);
+        $f->setMergeName($row["merge_name"]);
         $f->setFormName($row["formname"]);
         $stmt->closeCursor();
         return $f;
