@@ -108,6 +108,27 @@ $(function () {
 
 
     })
+
+
+    $("#select-brands").on("change", function () {
+
+        var brand_id = $("#select-brands").selectpicker("val");
+
+        $("#extractions").selectpicker("val", "0");
+
+        $("#extractions").selectpicker('destroy');
+
+        if (brand_id == "") {
+            $(".form-option").show();
+        } else {
+            $(".form-option").hide();
+            $(".form-option").filter('[data-brand-id=' + brand_id + ']').show();
+
+        }
+
+        $("#extractions").selectpicker();
+        $("#extractions").selectpicker('refresh');
+    })
 })
 
 

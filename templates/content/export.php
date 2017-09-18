@@ -2,13 +2,24 @@
 
 <form class="" method="post" action="<?php echo $_["webRoot"] ?>/index.php/apps/zendextract/extraction/generate">
     <div class="form-group">
+        <label for="extractions">Marque</label>
+        <select class="selectpicker" title="Filtrer par marque" id="select-brands">
+            <option></option>
+            <?php foreach ($_['brands'] as $brand): ?>
+
+                <option title="<?php echo $brand->getName() ?>"
+                        value="<?php echo $brand->id ?>"><?php echo $brand->getName() ?></option>
+            <?php endforeach; ?>
+        </select>
+    </div>
+    <div class="form-group">
         <label for="extractions">Extraction</label>
         <select required id="extractions" name="extractionId" class="selectpicker"
                 title="Sélectionnez une extraction">
 
             <?php foreach ($_['extractions'] as $extraction): ?>
 
-                <option title="<?php echo $extraction->getName() ?>" <?php echo $extraction->id == $_["extractionId"] ? "selected" : "" ?>
+                <option class="form-option" data-brand-id="<?php echo  $extraction->getBrandId() ?>" title="<?php echo $extraction->getName() ?>" <?php echo $extraction->id == $_["extractionId"] ? "selected" : "" ?>
                         value="<?php echo $extraction->id ?>"><?php echo $extraction->getName() ?></option>
             <?php endforeach; ?>
         </select>

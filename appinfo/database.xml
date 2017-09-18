@@ -27,6 +27,12 @@
                 <notnull>true</notnull>
                 <length>1000</length>
             </field>
+            <field>
+                <name>brand_id</name>
+                <type>integer</type>
+                <notnull>true</notnull>
+                <length>4</length>
+            </field>
             <index>
 
                 <name>name_index</name>
@@ -37,6 +43,17 @@
 
                 </field>
                 <unique>1</unique>
+
+            </index>
+            <index>
+
+                <name>brand_index</name>
+                <field>
+
+                    <name>brand_id</name>
+                    <sorting>ascending</sorting>
+
+                </field>
 
             </index>
         </declaration>
@@ -198,5 +215,31 @@
         </declaration>
 
     </table>
-
+    <table>
+        <name>*dbprefix*zendextract_brands</name>
+        <declaration>
+            <field>
+                <name>id</name>
+                <type>integer</type>
+                <default>0</default>
+                <notnull>true</notnull>
+                <autoincrement>1</autoincrement>
+                <length>4</length>
+            </field>
+            <field>
+                <name>name</name>
+                <type>text</type>
+                <notnull>true</notnull>
+                <length>100</length>
+            </field>
+            <index>
+                <name>name_index</name>
+                <field>
+                    <name>name</name>
+                    <sorting>ascending</sorting>
+                </field>
+                <unique>1</unique>
+            </index>
+        </declaration>
+    </table>
 </database>

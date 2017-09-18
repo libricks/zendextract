@@ -30,6 +30,8 @@ use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\Controller;
 
+use OCA\ZendExtract\Db\BrandMapper;
+use OCA\ZendExtract\Db\Brand;
 use OCA\ZendExtract\Db\ExtractionMapper;
 use OCA\ZendExtract\Db\FormMapper;
 use OCA\ZendExtract\Db\Extraction;
@@ -64,6 +66,12 @@ class ExtractionController extends Controller
      * @access  private
      */
     private $extractionMapper;
+
+    /**
+     * @var     integer $brandMapper Potential values are ...
+     * @access  private
+     */
+    private $brandMapper;
 
     /**
      * @var     integer $formMapper Potential values are ...
@@ -132,6 +140,7 @@ class ExtractionController extends Controller
     public function __construct($appName,
                                 IRequest $request,
                                 $UserId,
+                                BrandMapper $brandMapper,
                                 ExtractionMapper $extractionMapper,
                                 FormMapper $formMapper,
                                 FieldMapper $fieldMapper,
@@ -145,6 +154,7 @@ class ExtractionController extends Controller
         parent::__construct($appName, $request);
 
         $this->userId = $UserId;
+        $this->brandMapper = $brandMapper;
         $this->extractionMapper = $extractionMapper;
         $this->formMapper = $formMapper;
         $this->fieldMapper = $fieldMapper;
@@ -194,17 +204,15 @@ class ExtractionController extends Controller
         $extraction = $this->extractionMapper->find($id);
         if ($step == 1) {
 
-            // $all_forms = $this->zendDeskAPI->get("/api/v2/ticket_forms.json");
-            //$selected_forms_ids = $this->formMapper->findByExtractionId($id);
+            $brands = $this->brandMapper->findAll();
 
             return new TemplateResponse('zendextract', 'index', array(
+                    'brands' => $brands,
                     'webRoot' => $this->webRoot,
                     'view' => "step1",
                     'step' => 1,
-                    //      'forms' => $all_forms,
-                    //    'selected_forms_ids' => $selected_forms_ids,
                     'extraction' => $extraction)
-            );  // templates/index.php
+            );
 
         } else if ($step == 2) {
             $fields = $this->fieldMapper->findAllByExtractionId($id);
@@ -243,14 +251,16 @@ class ExtractionController extends Controller
      */
     public function create()
     {
+
         $all_forms = $this->zendDeskAPI->get("/api/v2/ticket_forms.json");
+        $brands = $this->brandMapper->findAll();
 
         return new TemplateResponse('zendextract', 'index', array(
+                'brands' => $brands,
                 'mode' => 'create',
                 'webRoot' => $this->webRoot,
                 'view' => "step1",
                 'forms' => $all_forms,
-                'selected_forms_ids' => array(),
                 'extraction' => new Extraction())
         );  // templates/index.php
     }
@@ -312,7 +322,7 @@ class ExtractionController extends Controller
      * @param   integer $id |null
      * @return  RedirectResponse
      */
-    public function step1POST($name, $forms, $defaultpath = "", $mode, $id = null)
+    public function step1POST($name, $forms, $defaultpath = "", $mode, $brand_id, $newbrand, $id = null)
     {
 
         //Création de l'extraction
@@ -405,6 +415,21 @@ class ExtractionController extends Controller
             $extraction->setName($name);
             $this->extractionMapper->update($extraction);
         }
+
+
+        if(isset($newbrand) && trim($newbrand) != ""){
+
+            $brand = new Brand();
+            $brand->setName($newbrand);
+            $brand = $this->brandMapper->insert($brand);
+            $brand_id = $brand->getId();
+        }
+
+
+        $extraction->setBrandId($brand_id);
+        $this->extractionMapper->update($extraction);
+
+
         return new RedirectResponse($this->webRoot . "/index.php/apps/zendextract/extraction/step/2/" . $extraction->id);
     }
     // }}}
@@ -490,7 +515,9 @@ class ExtractionController extends Controller
     {
 
         $extractions = $this->extractionMapper->findAll();
+        $brands = $this->brandMapper->findAll();
         return new TemplateResponse('zendextract', 'index', array(
+            'brands' => $brands,
             'webRoot' => $this->webRoot,
             'view' => "export",
             'extractions' => $extractions,
