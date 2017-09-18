@@ -108,8 +108,12 @@ $(function () {
 
 
     })
-
-
+    disableCreation();
+//Formulaire Step 1
+    $("#brand-selection").on("change", function () {
+        disableCreation();
+    });
+    //Formulaire Export
     $("#select-brands").on("change", function () {
 
         var brand_id = $("#select-brands").selectpicker("val");
@@ -131,6 +135,16 @@ $(function () {
     })
 })
 
+
+function disableCreation(){
+    var brand_id = $("#brand-selection").selectpicker("val");
+
+    if (brand_id == "") {
+        $("#newbrand").prop('disabled', false);
+    } else {
+        $("#newbrand").prop('disabled', true);
+    }
+}
 
 function updateOptions() {
     $(".options").each(function () {

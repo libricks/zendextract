@@ -23,7 +23,7 @@
     <div class="form-group ">
         <label class="col-sm-2 control-label" for="forms">Marque</label>
         <div class="col-sm-2">
-            <select id="brand_id" data-selected-text-format="count" name="brand_id" class="selectpicker"
+            <select id="brand-selection" data-selected-text-format="count" name="brand_id" class="selectpicker"
                     title="Sélectionnez une marque">
                 <option></option>
                 <?php foreach ($_['brands'] as $brand): ?>
@@ -40,7 +40,7 @@
         </div>
         <label class="col-sm-2 control-label" for="forms">Créer une marque</label>
         <div class="col-sm-2">
-            <input name="newbrand" type="text" class="form-control" id="folder" placeholder="Associer une nouvelle marque">
+            <input id="newbrand" name="newbrand" type="text" class="form-control" id="folder" placeholder="Associer une nouvelle marque">
         </div>
     </div>
 
