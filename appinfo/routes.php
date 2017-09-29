@@ -29,6 +29,7 @@ return [
         ['name' => 'extraction#deleteConfirm', 'url' => '/extraction/deleteConfirm/{id}', 'verb' => 'POST'],
         ['name' => 'extraction#step1POST', 'url' => '/extraction/step1POST', 'verb' => 'POST'],
         ['name' => 'extraction#step2POST', 'url' => '/extraction/step2POST', 'verb' => 'POST'],
+        ['name' => 'extraction#step2UPDATE', 'url' => '/extraction/step2UPDATE', 'verb' => 'POST'],
         ['name' => 'extraction#step3POST', 'url' => '/extraction/step3POST', 'verb' => 'POST'],
         ['name' => 'extraction#generate', 'url' => '/extraction/generate', 'verb' => 'POST'],
         ['name' => 'extraction#step', 'url' => '/extraction/step/{step}/{id}', 'verb' => 'GET'],

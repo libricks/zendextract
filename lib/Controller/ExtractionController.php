@@ -417,7 +417,7 @@ class ExtractionController extends Controller
         }
 
 
-        if(isset($newbrand) && trim($newbrand) != ""){
+        if (isset($newbrand) && trim($newbrand) != "") {
 
             $brand = new Brand();
             $brand->setName($newbrand);
@@ -460,6 +460,53 @@ class ExtractionController extends Controller
         }
 
         return new RedirectResponse($this->webRoot . "/index.php/apps/zendextract/extraction/step/3/" . $id);
+    }
+    // }}}
+
+
+    // {{{ step2POST()
+    /**
+     * @NoAdminRequired
+     * @NoCSRFRequired
+     *
+     * @todo    function step2POST is not documented
+     * @access  public
+     * @param   integer $id
+     * @param   collection $selected_fields
+     * @return  RedirectResponse
+     */
+    public function step2UPDATE($id)
+    {
+
+        $forms = $this->formMapper->findByExtractionId($id);
+        $order_index = 2000;
+        //Création des champs pour chaque formulaire
+        foreach ($forms as $form) {
+            $result = $this->zendDeskAPI->get("/api/v2/ticket_forms/$form.json");
+            $fields = $result->ticket_form->ticket_field_ids;
+
+            foreach ($fields as $field) {
+
+                $database_field = $this->fieldMapper->findByExtractionAndFieldId($id, $field);
+
+                if ($database_field == null) {
+                    $field = $this->zendDeskAPI->get("/api/v2/ticket_fields/$field.json");
+
+                    $f = new Field();
+
+                    $f->setFormId($form->getId());
+                    $f->setFieldId($field->ticket_field->id);
+                    $f->setTitle($field->ticket_field->title);
+                    $f->setColumnName($field->ticket_field->title);
+                    $f->setType($field->ticket_field->type);
+                    $f->setIsActive(false);
+                    $f->setOrderIndex($order_index++);
+                    $f->setExtractionId($id);
+                    $this->fieldMapper->insert($f);
+                }
+            }
+        }
+        return new RedirectResponse($this->webRoot . "/index.php/apps/zendextract/extraction/step/2/" . $id);
     }
     // }}}
 
