@@ -883,10 +883,13 @@ class ExtractionController extends Controller
 
         $dt = new DateTime();
         //$filename = $dt->format('Y-m-d H:i:s');
+
+        $extraction_name = str_replace("/", " ", $extraction->getName());
+
         if ($week_to == $week_from)
-            $filename = $extraction->getName() . " -  semaine " . $week_from . " (" . $year . ")";
+            $filename = $extraction_name . " -  semaine " . $week_from . " (" . $year . ")";
         else
-            $filename = $extraction->getName() . " -  semaines " . $week_from . " à " . $week_to . " (" . $year . ")";
+            $filename = $extraction_name . " -  semaines " . $week_from . " à " . $week_to . " (" . $year . ")";
         $file = $folder->newFile($filename . ".csv");
         $fileResource = $file->fopen('w');
 
