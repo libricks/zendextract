@@ -494,7 +494,7 @@ class ExtractionController extends Controller
 
                     $f = new Field();
 
-                    $f->setFormId($form->getId());
+                    $f->setFormId($form);
                     $f->setFieldId($field->ticket_field->id);
                     $f->setTitle($field->ticket_field->title);
                     $f->setColumnName($field->ticket_field->title);
