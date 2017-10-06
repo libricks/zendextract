@@ -659,6 +659,9 @@ class ExtractionController extends Controller
 
             //Récupération de tous les tickets
             $result = $this->zendDeskAPI->get("/api/v2/search.json?query=" . urlencode($query));
+            // 20171006-01 START-MHP
+            $this->logger->debug("DEBUG - Valeur de la requete : " . $query, array('app' => $this->appName));
+            // 20171006-01 END-MHP
             $tickets = $result->results;
 
 
