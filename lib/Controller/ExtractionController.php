@@ -592,7 +592,7 @@ class ExtractionController extends Controller
     public function generate($extractionId, $fromTreatment, $toTreatment, $fromContact, $toContact, $fromCreate, $toCreate, $charset)
     {
 
-
+        echo memory_get_usage ()."\t Avant première page \t ".date("d/m/Y G:i:s")."\t<br/>";
         //Récupération de l'extraction en BDD
         $extraction = $this->extractionMapper->find($extractionId);
         try {
@@ -659,13 +659,24 @@ class ExtractionController extends Controller
 
             //Récupération de tous les tickets
             $result = $this->zendDeskAPI->get("/api/v2/search.json?query=" . urlencode($query));
+            foreach ($result->results as $ticket){
+                $ticket->fields = null;
+            }
             $tickets = $result->results;
 
 
+
+            echo memory_get_usage ()."\t page 1 \t ".date("d/m/Y G:i:s")."\t<br/>";
+
             //S'il y a une pagination des résulats récupération de tous les tickets paginés
+            $i = 2;
             while ($result->next_page != null) {
                 $result = $this->zendDeskAPI->getAbsolute($result->next_page);
+                foreach ($result->results as $ticket){
+                    $ticket->fields = null;
+                }
                 $tickets = array_merge($tickets, $result->results);
+                echo memory_get_usage ()."\t page ".$i++."\t ".date("d/m/Y G:i:s")."\t<br/>";
             }
 
         } catch (Httpful\Exception $e) {
@@ -714,8 +725,9 @@ class ExtractionController extends Controller
 
         //Pour chaque ticket
         $mergeName = "";
+        $i = 0;
         foreach ($tickets as $ticket) {
-
+            echo memory_get_usage ()."\t ticket \t ".date("d/m/Y G:i:s")."\t<br/>";
             $row = array();
             $value = "";
 
@@ -780,7 +792,7 @@ class ExtractionController extends Controller
                                 $value = "";
                             }
                         }
-
+                        echo memory_get_usage ()."\t conversation \t ".date("d/m/Y G:i:s")."\t<br/>";
 
                     } else {
                         $value = $this->customfieldsSearch($ticket, $field->getFieldId(), $extractionId);
@@ -864,7 +876,10 @@ class ExtractionController extends Controller
                 $mergeName = $field->getMergeName();
             }
             $arrayCSV[] = $row;
+            $tickets[$i] = null;
+            $i++;
         }
+        echo memory_get_usage ()."\t début génération fichier \t ".date("d/m/Y G:i:s")."\t<br/>";
 
         try {
             \OC::$server->getRootFolder()->get($this->userId . "/files/Extractions/");
@@ -897,7 +912,12 @@ class ExtractionController extends Controller
             fputcsv($fileResource, $row, ";");
         }
 
+
+
         fclose($file);
+
+        echo memory_get_usage ()."\t fichier généré \t ".date("d/m/Y G:i:s")."\t<br/>";
+        //die();
         return new TemplateResponse('zendextract', 'index', array(
             'webRoot' => $this->webRoot,
             'view' => "generate",
