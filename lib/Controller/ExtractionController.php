@@ -794,7 +794,21 @@ class ExtractionController extends Controller
                         }
                  //       echo memory_get_usage ()."\t conversation \t ".date("d/m/Y G:i:s")."\t<br/>";
 
-                    } else {
+                    } else if ($field->getType() == "multiselect") {
+
+                        $ArrayValue = $this->customfieldsSearch($ticket, $field->getFieldId(), $extractionId);
+                        if($ArrayValue != null){
+                            foreach ($ArrayValue as $v){
+                                $v = trim($v, "_");
+                                $value.="$v, ";
+                            }
+                            $value = substr($value, 0, strlen(($value)) -2);
+                            var_dump($value);
+                        }
+
+
+
+                    }  else {
                         $value = $this->customfieldsSearch($ticket, $field->getFieldId(), $extractionId);
                     }
                     $value = trim(preg_replace('/\s+/', ' ', $value));
