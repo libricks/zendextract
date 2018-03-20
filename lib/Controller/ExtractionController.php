@@ -803,7 +803,7 @@ class ExtractionController extends Controller
                                 $value.="$v, ";
                             }
                             $value = substr($value, 0, strlen(($value)) -2);
-                            var_dump($value);
+                           // var_dump($value);
                         }
 
 
