@@ -795,7 +795,8 @@ class ExtractionController extends Controller
                  //       echo memory_get_usage ()."\t conversation \t ".date("d/m/Y G:i:s")."\t<br/>";
 
                     } else if ($field->getType() == "multiselect") {
-
+                        $value = "";
+                        $v = "";
                         $ArrayValue = $this->customfieldsSearch($ticket, $field->getFieldId(), $extractionId);
                         if($ArrayValue != null){
                             foreach ($ArrayValue as $v){
