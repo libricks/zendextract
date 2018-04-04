@@ -33,7 +33,7 @@ class ExtractionMapper extends Mapper
 
 
     public function findAll() {
-        $sql = 'SELECT * FROM `*PREFIX*zendextract_extractions` ';
+        $sql = 'SELECT * FROM `*PREFIX*zendextract_extractions` ORDER BY CONVERT(`name`USING UTF8) ';
         return $this->findEntities($sql);
     }
 }
