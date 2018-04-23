@@ -37,6 +37,8 @@ use OCA\ZendExtract\Db\FormMapper;
 use OCA\ZendExtract\Db\Extraction;
 use OCA\ZendExtract\Db\Field;
 use OCA\ZendExtract\Db\FieldMapper;
+use OCA\ZendExtract\Db\Group;
+use OCA\ZendExtract\Db\GroupMapper;
 use OCA\ZendExtract\Db\Form;
 
 use OCP\IURLGenerator;
@@ -51,6 +53,7 @@ use \DateTime;
  *
  *
  */
+
 class ExtractionController extends Controller
 {
     // {{{ properties
@@ -86,6 +89,12 @@ class ExtractionController extends Controller
     private $fieldMapper;
 
     /**
+     * @var     integer $groupMapper Potential values are ...
+     * @access  private
+     */
+    private $groupMapper;
+
+    /**
      * @var     integer $urlGenerator Potential values are ...
      * @access  private
      */
@@ -114,6 +123,8 @@ class ExtractionController extends Controller
      * @access  private
      */
     private $webRoot;
+
+
 
     // }}}
 
@@ -144,6 +155,7 @@ class ExtractionController extends Controller
                                 ExtractionMapper $extractionMapper,
                                 FormMapper $formMapper,
                                 FieldMapper $fieldMapper,
+                                GroupMapper $groupMapper,
                                 IURLGenerator $urlGenerator,
                                 IRootFolder $rootfolder,
                                 ILogger $logger,
@@ -158,6 +170,7 @@ class ExtractionController extends Controller
         $this->extractionMapper = $extractionMapper;
         $this->formMapper = $formMapper;
         $this->fieldMapper = $fieldMapper;
+        $this->groupMapper = $groupMapper;
         $this->urlGenerator = $urlGenerator;
         $this->root = $rootfolder;
         $this->zendDeskAPI = $zendDeskAPI;
@@ -178,12 +191,35 @@ class ExtractionController extends Controller
      */
     public function index()
     {
-        $extractions = $this->extractionMapper->findAll();
+        $extractions= array();
+        $groups = $this->groupMapper->findByUserId($this->userId);
+        foreach ($groups as $group){
+            if($group->getGid()=='admin'){
+                $extractions = $this->extractionMapper->findAll();
+                $groups = $this->groupMapper->findAll();
+                break;
+            }else{
+                $temp= $this->extractionMapper->findbyGroupId($group->getGid());
+                $extractions = array_merge($extractions, $temp);
+            }
+         }
+        //création d'une variable tableau extractions contenant toutes les extractions
+
+        //vérifier si un des groupes est "admin"
+        //si oui donner toutes les exttraction
+        //si non
+            //pour chaque groupe de l'utilisateur
+                //récuperer dans $les_extractions_du_groupe_actuel les extractions du groupe
+                //ajouter les extractions du groupe à $extractinos
+
+
 
         return new TemplateResponse('zendextract', 'index', array(
             'webRoot' => $this->webRoot,
             'view' => "index",
-            'extractions' => $extractions));  // templates/index.php
+            'group' => $groups,
+            'extractions' => $extractions));
+        // templates/index.php
     }
     // }}}
 
@@ -254,13 +290,14 @@ class ExtractionController extends Controller
 
         $all_forms = $this->zendDeskAPI->get("/api/v2/ticket_forms.json");
         $brands = $this->brandMapper->findAll();
-
+        $groups = $this->groupMapper->findByUserId($this->userId);
         return new TemplateResponse('zendextract', 'index', array(
                 'brands' => $brands,
                 'mode' => 'create',
                 'webRoot' => $this->webRoot,
                 'view' => "step1",
                 'forms' => $all_forms,
+                'groups' => $groups,
                 'extraction' => new Extraction())
         );  // templates/index.php
     }
@@ -322,7 +359,7 @@ class ExtractionController extends Controller
      * @param   integer $id |null
      * @return  RedirectResponse
      */
-    public function step1POST($name, $forms, $defaultpath = "", $mode, $brand_id, $newbrand, $id = null)
+    public function step1POST($name, $forms, $defaultpath = "", $mode, $brand_id, $newbrand, $id = null,$group)
     {
 
         //Création de l'extraction
@@ -333,6 +370,7 @@ class ExtractionController extends Controller
                 $e = new Extraction();
                 $e->setName($name);
                 $e->setDefaultPath($defaultpath);
+                $e->setGroupId($group);
                 $extraction = $this->extractionMapper->insert($e);
             } catch (\Exception $e) {
                 //Si l'extraction est déjà créée
@@ -534,7 +572,6 @@ class ExtractionController extends Controller
             $f->setDateFormat($field["date_format"]);
             $f->setNbColumns($field["nb_columns"]);
             $f->setColumnsNames($field["columns_names"]);
-
             $f->setIsMerged(($field["is_merged"] == "on"));
             $f->setMergeName($field["merge_name"]);
             $f->setOrderIndex($i);
@@ -560,14 +597,25 @@ class ExtractionController extends Controller
      */
     public function export($id = null)
     {
-
-        $extractions = $this->extractionMapper->findAll();
+        $groups = $this->groupMapper->findByUserId($this->userId);
         $brands = $this->brandMapper->findAll();
+        $extractions= array();
+        foreach ($groups as $group){
+            if($group->getGid()=='admin'){
+                $extractions = $this->extractionMapper->findAll();
+                $groups =$this->groupMapper->findAll();
+                break;
+            }else{
+                $temp= $this->extractionMapper->findbyGroupId($group->getGid());
+                $extractions = array_merge($extractions, $temp);
+            }
+        }
         return new TemplateResponse('zendextract', 'index', array(
             'brands' => $brands,
             'webRoot' => $this->webRoot,
             'view' => "export",
             'extractions' => $extractions,
+            'groups' => $groups,
             'extractionId' => $id));  // templates/index.php
     }
 

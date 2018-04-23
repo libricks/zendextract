@@ -15,7 +15,7 @@ namespace OCA\ZendExtract\Db;
 
 use OCP\IDBConnection;
 use OCP\AppFramework\Db\Mapper;
-class ExtractionMapper extends Mapper
+class groupMapper extends Mapper
 {
     public function __construct(IDBConnection $db) {
         parent::__construct($db, 'zendextract_extractions');
@@ -26,19 +26,19 @@ class ExtractionMapper extends Mapper
      * @throws \OCP\AppFramework\Db\MultipleObjectsReturnedException if more than one result
      */
     public function find($id) {
-        $sql = 'SELECT * FROM `*PREFIX*zendextract_extractions` ' .
-            'WHERE `id` = ?';
-        return $this->findEntity($sql, [$id]);
+        $sql = 'SELECT oc_groups.gid FROM `*PREFIX*group_user` INNER JOIN `*PREFIX*groups` ON `*PREFIX*groups`.gid=`*PREFIX*group_user`.gid ' .
+            'WHERE `*PREFIX*groups`.gid = ?';
+        return $this->findEntities($sql, [$id]);
     }
 
 
     public function findAll() {
-        $sql = 'SELECT * FROM `*PREFIX*zendextract_extractions` ORDER BY CONVERT(`name`USING UTF8) ';
+        $sql = 'SELECT * FROM `*PREFIX*groups` ORDER BY CONVERT(`gid`USING UTF8) ';
         return $this->findEntities($sql);
     }
-    public function findbyGroupId($id){
-        $sql = 'SELECT * FROM `*PREFIX*zendextract_extractions` ' .
-            'WHERE `group_id` = ?';
-        return $this->findEntities($sql, [$id]);
+    public function findByUserId($user){
+        $sql = $sql = 'SELECT oc_groups.gid FROM `*PREFIX*group_user` INNER JOIN `*PREFIX*groups` ON `*PREFIX*groups`.gid=`*PREFIX*group_user`.gid ' .
+            'WHERE `*PREFIX*group_user`.uid= ? ';
+        return $this->findEntities($sql,[$user]);
     }
 }

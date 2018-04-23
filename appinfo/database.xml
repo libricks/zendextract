@@ -32,6 +32,12 @@
                 <type>integer</type>
                 <notnull>true</notnull>
                 <length>4</length>
+                <length>1000</length>
+            </field>
+            <field>
+                <name>group_id</name>
+                <type>text</type>
+                <notnull>true</notnull>
             </field>
             <index>
 

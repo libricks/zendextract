@@ -28,6 +28,8 @@ class SettingsController extends Controller {
     private $cityMapper;
     private $config;
 
+
+
     public function __construct ($appName, IConfig $config, IRequest $request, $userId) {
         parent::__construct($appName, $request);
         $this->userId = $userId;

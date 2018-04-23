@@ -13,13 +13,24 @@
         </select>
     </div>
     <div class="form-group">
+        <label for="extractions">Groupe</label>
+        <select class="selectpicker" title="Filtrer par groupe" id="select-groups-export">
+            <?php foreach ($_['groups'] as $group): ?>
+
+                <option title="<?php echo $group->getGid() ?>"
+                        value="<?php echo $group->getGid() ?>"><?php echo $group->getGid() ?></option>
+            <?php endforeach; ?>
+        </select>
+    </div>
+
+    <div class="form-group">
         <label for="extractions">Extraction</label>
         <select required id="extractions" name="extractionId" class="selectpicker"
                 title="Sélectionnez une extraction">
 
             <?php foreach ($_['extractions'] as $extraction): ?>
 
-                <option class="form-option" data-brand-id="<?php echo  $extraction->getBrandId() ?>" title="<?php echo $extraction->getName() ?>" <?php echo $extraction->id == $_["extractionId"] ? "selected" : "" ?>
+                <option class="form-option" data-brand-id="<?php echo  $extraction->getBrandId() ?>" data-group-id="<?php echo  $extraction->getGroupId() ?>" title="<?php echo $extraction->getName() ?>" <?php echo $extraction->id == $_["extractionId"] ? "selected" : "" ?>
                         value="<?php echo $extraction->id ?>"><?php echo $extraction->getName() ?></option>
             <?php endforeach; ?>
         </select>

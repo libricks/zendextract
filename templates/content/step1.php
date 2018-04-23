@@ -58,6 +58,19 @@
                 </select>
             </div>
         </div>
+        <div class="form-group ">
+            <label class="col-sm-2 control-label" for="forms">Groupe</label>
+            <div class="col-sm-6">
+                <select required id="group" data-selected-text-format="count" name="group" class="selectpicker"
+                        title="Sélectionnez le groupe auquel attribuer cette extraction">
+                    <?php foreach ($_['groups'] as $group): ?>
+                        <option title="<?php echo $group->getGid() ?>" value="<?php echo $group->getGid()?>"><?php echo $group->getGid() ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+        </div>
+
+
 
     <?php endif; ?>
 

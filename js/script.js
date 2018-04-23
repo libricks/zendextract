@@ -11,6 +11,7 @@
  */
 
 $(function () {
+
     $('.sortable button.move').click(function ($e) {
 
         var row = $(this).closest('tr');
@@ -117,23 +118,74 @@ $(function () {
     $("#select-brands").on("change", function () {
 
         var brand_id = $("#select-brands").selectpicker("val");
+        console.log(brand_id);
+        var group_id = $("#select-groups-export").selectpicker("val");
 
         $("#extractions").selectpicker("val", "0");
 
         $("#extractions").selectpicker('destroy');
 
-        if (brand_id == "") {
+        if (brand_id == "" && group_id == "") {
             $(".form-option").show();
-        } else {
+        } else if (brand_id != "" && group_id == "") {
             $(".form-option").hide();
             $(".form-option").filter('[data-brand-id=' + brand_id + ']').show();
 
+        } else if (brand_id == "" && group_id != "") {
+            $(".form-option").hide();
+            $(".form-option").filter('[data-group-id="' + group_id + '"]').show();
+        } else if (brand_id != "" && group_id != "") {
+            $(".form-option").hide();
+            $(".form-option").filter(' [data-brand-id=' + brand_id + ']').filter('[data-group-id="' + group_id + '"]').show();
         }
 
         $("#extractions").selectpicker();
         $("#extractions").selectpicker('refresh');
     })
-})
+
+
+    $("#select-groups-export").on("change", function () {
+        var brand_id = $("#select-brands").selectpicker("val");
+        console.log(brand_id);
+        var group_id = $("#select-groups-export").selectpicker("val");
+
+        $("#extractions").selectpicker("val", "0");
+
+        $("#extractions").selectpicker('destroy');
+
+        if (brand_id == "" && group_id == "") {
+            $(".form-option").show();
+        } else if (brand_id != "" && group_id == "") {
+            $(".form-option").hide();
+            $(".form-option").filter('[data-brand-id=' + brand_id + ']').show();
+
+        } else if (brand_id == "" && group_id != "") {
+            $(".form-option").hide();
+            $(".form-option").filter('[data-group-id="' + group_id + '"]').show();
+        } else if (brand_id != "" && group_id != "") {
+            $(".form-option").hide();
+            $(".form-option").filter(' [data-brand-id=' + brand_id + ']').filter('[data-group-id="' + group_id + '"]').show();
+        }
+
+        $("#extractions").selectpicker();
+        $("#extractions").selectpicker('refresh');
+    });
+
+
+    $("#group").on("change", function () {
+        var input = $("#group").selectpicker("val");
+        console.log(input);
+        if (input == "") {
+            $("#myTable tr").show();
+        } else {
+            $("#myTable tr").hide();
+
+            $("#myTable tr").filter('[data-group-id="'+input +'"]').show();
+
+
+        }
+    });
+});
 
 
 function disableCreation(){
@@ -154,4 +206,5 @@ function updateOptions() {
 
     });
 }
+
 

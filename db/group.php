@@ -15,13 +15,10 @@ namespace OCA\ZendExtract\Db;
 
 use OCP\AppFramework\Db\Entity;
 
-class Extraction extends Entity
+class Group extends Entity
 {
 
-    protected $name;
-    protected $defaultPath;
-    protected $brandId;
-    protected $groupId;
+    protected $gid;
     public function __construct() {
         // add types in constructor
 //       $this->addType('name', 'string');

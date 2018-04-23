@@ -1,6 +1,16 @@
 <h1>Extractions</h1>
-
-<table class="table table-bordered table-striped table-hover">
+<div class="form-group ">
+    <label class="col-sm-1 control-label" for="forms" style="margin-bottom: 25px">Groupe</label>
+    <div class="col-sm-6">
+        <select required id="group" data-selected-text-format="count" name="group" class="selectpicker"
+                title="Sélectionnez le groupe auquel attribuer cette extraction" >
+            <option></option>
+            <?php foreach ($_['group'] as $group): ?>
+                <option title="<?php echo $group->getGid() ?>" value="<?php echo $group->getGid()?>"><?php echo $group->getGid() ?></option>
+            <?php endforeach; ?>
+        </select>
+    </div>
+<table class="table table-bordered table-striped table-hover" id="myTable">
     <tr>
         <th>Nom</th>
         <th>Options</th>
@@ -8,7 +18,7 @@
     </tr>
 
     <?php foreach($_["extractions"] as $extraction): ?>
-        <tr>
+        <tr data-group-id="<?php echo $extraction->getGroupId(); ?>">
             <td><?php echo $extraction->getName() ?></td>
 
             <td>
