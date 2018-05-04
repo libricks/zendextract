@@ -1,4 +1,5 @@
 <?php
+
 /**
  * nextCloud - Zendesk Xtractor
  *
@@ -16,11 +17,12 @@
  */
 
 namespace OCA\ZendExtract\Controller;
-
+error_reporting(E_ALL);
+ini_set("display_errors", 1);
 /**
  *
  */
-require_once __DIR__ . '/../Vendor/autoload.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 
 //use Zendesk\API\HttpClient as ZendeskAPI;
 
@@ -288,7 +290,7 @@ class ExtractionController extends Controller
     public function create()
     {
 
-        $all_forms = $this->zendDeskAPI->get("/api/v2/ticket_forms.json");
+        $all_forms = $this->zendDeskAPI->get("  ticket_forms.json");
         $brands = $this->brandMapper->findAll();
         $groups = $this->groupMapper->findByUserId($this->userId);
         return new TemplateResponse('zendextract', 'index', array(
