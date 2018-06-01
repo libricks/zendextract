@@ -58,6 +58,7 @@
                 </select>
             </div>
         </div>
+    <?php endif; ?>
         <div class="form-group ">
             <label class="col-sm-2 control-label" for="forms">Groupe</label>
             <div class="col-sm-6">
@@ -72,7 +73,7 @@
 
 
 
-    <?php endif; ?>
+
 
     <div class="form-group ">
 

@@ -240,6 +240,7 @@ class ExtractionController extends Controller
     public function step($step, $id)
     {
         $extraction = $this->extractionMapper->find($id);
+        $groups = $this->groupMapper->findAll();
         if ($step == 1) {
 
             $brands = $this->brandMapper->findAll();
@@ -249,6 +250,7 @@ class ExtractionController extends Controller
                     'webRoot' => $this->webRoot,
                     'view' => "step1",
                     'step' => 1,
+                    'groups' => $groups,
                     'extraction' => $extraction)
             );
 
@@ -262,6 +264,7 @@ class ExtractionController extends Controller
                     'view' => "step2",
                     'step' => $step,
                     'extraction' => $extraction,
+
                     'fields' => $fields)
             );  // templates/index.php
         } else if ($step == 3) {
