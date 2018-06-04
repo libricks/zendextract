@@ -65,7 +65,7 @@
                 <select required id="group" data-selected-text-format="count" name="group" class="selectpicker"
                         title="Sélectionnez le groupe auquel attribuer cette extraction">
                     <?php foreach ($_['groups'] as $group): ?>
-                        <option title="<?php echo $group->getGid() ?>" value="<?php echo $group->getGid()?>"><?php echo $group->getGid() ?></option>
+                        <option title="<?php echo $group->getGid() ?>" value="<?php echo $group->getGid()?>" <?php echo ($group->getGid() ==  $_["extraction"]->getGroupId()) ? "selected" : "" ?>><?php echo $group->getGid() ?></option>
                     <?php endforeach; ?>
                 </select>
             </div>

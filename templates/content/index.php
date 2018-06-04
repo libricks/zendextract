@@ -1,3 +1,14 @@
+<?php
+$admin = false;
+foreach ($_[groups] as $group){
+    if($group->getGid()=='admin'){
+        $admin = true;
+    }
+}
+if ($admin==false){
+  
+}
+?>
 <h1>Extractions</h1>
 <div class="form-group ">
     <label class="col-sm-1 control-label" for="forms" style="margin-bottom: 25px">Groupe</label>
@@ -5,7 +16,7 @@
         <select required id="group" data-selected-text-format="count" name="group" class="selectpicker"
                 title="Sélectionnez le groupe auquel attribuer cette extraction" >
             <option></option>
-            <?php foreach ($_['group'] as $group): ?>
+            <?php foreach ($_['groups'] as $group): ?>
                 <option title="<?php echo $group->getGid() ?>" value="<?php echo $group->getGid()?>"><?php echo $group->getGid() ?></option>
             <?php endforeach; ?>
         </select>

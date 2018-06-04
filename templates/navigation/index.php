@@ -2,7 +2,7 @@
     <ul >
         <?php
         $admin;
-        foreach ($_['group'] as $group){
+        foreach ($_['groups'] as $group){
             if($group->getGid()=='admin'){
                 $admin=true;
             }

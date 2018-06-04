@@ -219,7 +219,7 @@ class ExtractionController extends Controller
         return new TemplateResponse('zendextract', 'index', array(
             'webRoot' => $this->webRoot,
             'view' => "index",
-            'group' => $groups,
+            'groups' => $groups,
             'extractions' => $extractions));
         // templates/index.php
     }
@@ -295,7 +295,7 @@ class ExtractionController extends Controller
 
         $all_forms = $this->zendDeskAPI->get("/api/v2/ticket_forms.json");
         $brands = $this->brandMapper->findAll();
-        $groups = $this->groupMapper->findByUserId($this->userId);
+        $groups = $this->groupMapper->findAll();
         return new TemplateResponse('zendextract', 'index', array(
                 'brands' => $brands,
                 'mode' => 'create',

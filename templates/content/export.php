@@ -1,6 +1,16 @@
 <h1>Exports</h1>
+<?php
+$admin;
+foreach ($_['groups'] as $group){
+    if($group->getGid()=='admin'){
+        $admin=true;
+    }
+}
+
+?>
 
 <form class="" method="post" action="<?php echo $_["webRoot"] ?>/index.php/apps/zendextract/extraction/generate">
+  <?php  if ($admin) : ?>
     <div class="form-group">
         <label for="extractions">Marque</label>
         <select class="selectpicker" title="Filtrer par marque" id="select-brands">
@@ -22,7 +32,7 @@
             <?php endforeach; ?>
         </select>
     </div>
-
+ <?php endif; ?>
     <div class="form-group">
         <label for="extractions">Extraction</label>
         <select required id="extractions" name="extractionId" class="selectpicker"
