@@ -470,6 +470,7 @@ class ExtractionController extends Controller
 
 
         $extraction->setBrandId($brand_id);
+        $extraction->setGroupId($group);
         $this->extractionMapper->update($extraction);
 
 
