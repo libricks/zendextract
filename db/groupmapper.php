@@ -37,8 +37,18 @@ class groupMapper extends Mapper
         return $this->findEntities($sql);
     }
     public function findByUserId($user){
-        $sql = $sql = 'SELECT oc_groups.gid FROM `*PREFIX*group_user` INNER JOIN `*PREFIX*groups` ON `*PREFIX*groups`.gid=`*PREFIX*group_user`.gid ' .
+        $sql = 'SELECT oc_groups.gid FROM `*PREFIX*group_user` INNER JOIN `*PREFIX*groups` ON `*PREFIX*groups`.gid=`*PREFIX*group_user`.gid ' .
             'WHERE `*PREFIX*group_user`.uid= ? ';
         return $this->findEntities($sql,[$user]);
+    }
+
+    public function isAdmin($userId){
+        $sql =  'SELECT COUNT(oc_groups.gid) as c FROM `*PREFIX*group_user` 
+                        INNER JOIN `*PREFIX*groups` ON `*PREFIX*groups`.gid=`*PREFIX*group_user`.gid ' .
+                            'WHERE `*PREFIX*group_user`.uid= ? AND `*PREFIX*groups`.gid = \'admin\'';
+
+        $stmt = $this->execute($sql,[$userId] );
+        $row = $stmt->fetch();
+        return $row["c"] > 0;
     }
 }

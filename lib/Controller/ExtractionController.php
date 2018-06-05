@@ -194,33 +194,33 @@ class ExtractionController extends Controller
     public function index()
     {
         $extractions= array();
-        $groups = $this->groupMapper->findByUserId($this->userId);
-        foreach ($groups as $group){
-            if($group->getGid()=='admin'){
-                $extractions = $this->extractionMapper->findAll();
-                $groups = $this->groupMapper->findAll();
-                break;
-            }else{
-                $temp= $this->extractionMapper->findbyGroupId($group->getGid());
-                $extractions = array_merge($extractions, $temp);
-            }
-         }
+        $isAdmin = $this->groupMapper->isAdmin($this->userId);
+
+
         //création d'une variable tableau extractions contenant toutes les extractions
 
         //vérifier si un des groupes est "admin"
         //si oui donner toutes les exttraction
         //si non
-            //pour chaque groupe de l'utilisateur
-                //récuperer dans $les_extractions_du_groupe_actuel les extractions du groupe
-                //ajouter les extractions du groupe à $extractinos
+        //pour chaque groupe de l'utilisateur
+        //récuperer dans $les_extractions_du_groupe_actuel les extractions du groupe
+        //ajouter les extractions du groupe à $extractinos
 
 
+        //tester si l'utilisateur est dans le grupe admin
+        if(!$isAdmin){
+            return new RedirectResponse($this->webRoot . '/index.php/apps/zendextract/export');
+        }else{
+            $extractions = $this->extractionMapper->findAll();
+            $groups = $this->groupMapper->findAll();
+            return new TemplateResponse('zendextract', 'index', array(
+                'webRoot' => $this->webRoot,
+                'view' => "index",
+                'groups' => $groups,
+                'extractions' => $extractions));
+        }
 
-        return new TemplateResponse('zendextract', 'index', array(
-            'webRoot' => $this->webRoot,
-            'view' => "index",
-            'groups' => $groups,
-            'extractions' => $extractions));
+
         // templates/index.php
     }
     // }}}
@@ -646,7 +646,7 @@ class ExtractionController extends Controller
     public function generate($extractionId, $fromTreatment, $toTreatment, $fromContact, $toContact, $fromCreate, $toCreate, $charset)
     {
 
-     //   echo memory_get_usage ()."\t Avant première page \t ".date("d/m/Y G:i:s")."\t<br/>";
+        //   echo memory_get_usage ()."\t Avant première page \t ".date("d/m/Y G:i:s")."\t<br/>";
         //Récupération de l'extraction en BDD
         $extraction = $this->extractionMapper->find($extractionId);
         try {
@@ -720,7 +720,7 @@ class ExtractionController extends Controller
 
 
 
-      //      echo memory_get_usage ()."\t page 1 \t ".date("d/m/Y G:i:s")."\t<br/>";
+            //      echo memory_get_usage ()."\t page 1 \t ".date("d/m/Y G:i:s")."\t<br/>";
 
             //S'il y a une pagination des résulats récupération de tous les tickets paginés
             $i = 2;
@@ -730,7 +730,7 @@ class ExtractionController extends Controller
                     $ticket->fields = null;
                 }
                 $tickets = array_merge($tickets, $result->results);
-          //      echo memory_get_usage ()."\t page ".$i++."\t ".date("d/m/Y G:i:s")."\t<br/>";
+                //      echo memory_get_usage ()."\t page ".$i++."\t ".date("d/m/Y G:i:s")."\t<br/>";
             }
 
         } catch (Httpful\Exception $e) {
@@ -781,7 +781,7 @@ class ExtractionController extends Controller
         $mergeName = "";
         $i = 0;
         foreach ($tickets as $ticket) {
-        //    echo memory_get_usage ()."\t ticket \t ".date("d/m/Y G:i:s")."\t<br/>";
+            //    echo memory_get_usage ()."\t ticket \t ".date("d/m/Y G:i:s")."\t<br/>";
             $row = array();
             $value = "";
 
@@ -846,7 +846,7 @@ class ExtractionController extends Controller
                                 $value = "";
                             }
                         }
-                 //       echo memory_get_usage ()."\t conversation \t ".date("d/m/Y G:i:s")."\t<br/>";
+                        //       echo memory_get_usage ()."\t conversation \t ".date("d/m/Y G:i:s")."\t<br/>";
 
                     } else if ($field->getType() == "multiselect") {
                         $value = "";
@@ -858,7 +858,7 @@ class ExtractionController extends Controller
                                 $value.="$v, ";
                             }
                             $value = substr($value, 0, strlen(($value)) -2);
-                           // var_dump($value);
+                            // var_dump($value);
                         }
 
 
@@ -948,7 +948,7 @@ class ExtractionController extends Controller
             $tickets[$i] = null;
             $i++;
         }
-       // echo memory_get_usage ()."\t début génération fichier \t ".date("d/m/Y G:i:s")."\t<br/>";
+        // echo memory_get_usage ()."\t début génération fichier \t ".date("d/m/Y G:i:s")."\t<br/>";
 
         try {
             \OC::$server->getRootFolder()->get($this->userId . "/files/Extractions/");
@@ -985,7 +985,7 @@ class ExtractionController extends Controller
 
         fclose($file);
 
-     //   echo memory_get_usage ()."\t fichier généré \t ".date("d/m/Y G:i:s")."\t<br/>";
+        //   echo memory_get_usage ()."\t fichier généré \t ".date("d/m/Y G:i:s")."\t<br/>";
         //die();
         return new TemplateResponse('zendextract', 'index', array(
             'webRoot' => $this->webRoot,
