@@ -263,6 +263,7 @@ class ExtractionController extends Controller
                     'webRoot' => $this->webRoot,
                     'view' => "step2",
                     'step' => $step,
+                    'groups' => $groups,
                     'extraction' => $extraction,
 
                     'fields' => $fields)
@@ -273,6 +274,7 @@ class ExtractionController extends Controller
                 array(
                     'webRoot' => $this->webRoot,
                     'view' => "step3",
+                    'groups' => $groups,
                     'extraction' => $extraction,
                     'fields' => $fields)
             );
