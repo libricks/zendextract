@@ -48,30 +48,30 @@ foreach ($_['groups'] as $group){
     <h3>Date de traitement</h3>
     <div class="form-group">
         <label for="datetimepicker1">De</label>
-        <input name="fromTreatment" type='text' class="form-control" id="datetimepicker1"/>
+        <input autocomplete="off" name="fromTreatment" type='text' class="form-control" id="datetimepicker1"/>
     </div>
     <div class="form-group">
         <label for="datetimepicker2">A</label>
-        <input name="toTreatment" type='text' class="form-control" id="datetimepicker2"/>
+        <input autocomplete="off" name="toTreatment" type='text' class="form-control" id="datetimepicker2"/>
     </div>
     <h3>Date de contact</h3>
     <div class="form-group">
         <label for="datetimepicker3">De</label>
-        <input name="fromContact" type='text' class="form-control" id="datetimepicker3"/>
+        <input autocomplete="off" name="fromContact" type='text' class="form-control" id="datetimepicker3"/>
     </div>
     <div class="form-group">
         <label for="datetimepicker4">A</label>
-        <input name="toContact" type='text' class="form-control" id="datetimepicker4"/>
+        <input autocomplete="off" name="toContact" type='text' class="form-control" id="datetimepicker4"/>
     </div>
 
     <h3>Date de création</h3>
     <div class="form-group">
         <label for="datetimepicker5">De</label>
-        <input name="fromCreate" type='text' class="form-control" id="datetimepicker5"/>
+        <input autocomplete="off" name="fromCreate" type='text' class="form-control" id="datetimepicker5"/>
     </div>
     <div class="form-group">
         <label for="datetimepicker6">A</label>
-        <input name="toCreate" type='text' class="form-control" id="datetimepicker6"/>
+        <input autocomplete="off" name="toCreate" type='text' class="form-control" id="datetimepicker6"/>
     </div>
 
     <div class="form-group">
