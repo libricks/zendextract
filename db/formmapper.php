@@ -31,6 +31,27 @@ class FormMapper extends Mapper
         return $this->findEntity($sql, [$id]);
     }
 
+	public function findNameByExtractionId($extractionId)
+	{
+
+		$sql = 'SELECT `name` FROM `*PREFIX*zendextract_forms` ' .
+		       'WHERE `extraction_id` = ?';
+
+
+		$stmt = $this->execute($sql, [$extractionId]);
+		$ids = array();
+		while($row = $stmt->fetch()){
+			$names[] = $row["name"];
+		}
+
+
+
+
+		$stmt->closeCursor();
+
+		return $names;
+	}
+
 
     public function findByExtractionId($extractionId)
     {

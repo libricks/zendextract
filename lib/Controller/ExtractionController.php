@@ -471,7 +471,8 @@ class ExtractionController extends Controller
         }
 
 
-        $extraction->setBrandId($brand_id);
+	    if($brand_id != "")
+		    $extraction->setBrandId($brand_id);
         $extraction->setGroupId($group);
         $this->extractionMapper->update($extraction);
 
@@ -578,7 +579,8 @@ class ExtractionController extends Controller
             $f->setCustomFieldType($field["custom_field_type"]);
             $f->setCustomText($field["custom_text"]);
             $f->setDateFormat($field["date_format"]);
-            $f->setNbColumns($field["nb_columns"]);
+	        if($field["nb_columns"] != "")
+		        $f->setNbColumns($field["nb_columns"]);
             $f->setColumnsNames($field["columns_names"]);
             $f->setIsMerged(($field["is_merged"] == "on"));
             $f->setMergeName($field["merge_name"]);
@@ -653,7 +655,7 @@ class ExtractionController extends Controller
         $extraction = $this->extractionMapper->find($extractionId);
         try {
             //Récupération des formulaires de l'extraction
-            $forms = $this->formMapper->findByExtractionId($extractionId);
+            $forms = $this->formMapper->findNameByExtractionId($extractionId);
 
             $tickets = array();
             //$query = "type:ticket created>2017-07-17 ";
@@ -661,7 +663,7 @@ class ExtractionController extends Controller
 
             //Filtrer les tickets par formulaire
             foreach ($forms as $form) {
-                $query = $query . " ticket_form_id:" . $form;
+                $query = $query . " form:" . "\"".$form."\"";
             }
 
 
