@@ -26,7 +26,7 @@ class ZendDeskAPI
         // TODO : Check how to put this URI in a variable.
         $this->uri = "https://$this->subdomain.zendesk.com";
     }
-    public function get($endpoint, $params)
+    public function get($endpoint)
     {
         $response = "";
         try {
