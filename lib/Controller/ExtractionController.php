@@ -875,17 +875,13 @@ class ExtractionController extends Controller
                         $value = "";
                     }
 
-                    if ($field->getType() == "tagger" && $value == "1") {
-                        $value = "Oui";
-                    }
-
                     //Transformation de date
-
-
-                    if ($field->getCustomFieldType() == 1) {
+                    if (($field->getType() == "date" || $field->getTitle() == "created_at"|| $field->getTitle() == "modified_at") && $field->getCustomFieldType() == 1) {
                         setlocale(LC_TIME, "fr_FR");
-                        $value = strftime($field->getDateFormat(), (new DateTime($value))->getTimestamp());
+                        $value = date($field->getDateFormat(), (new DateTime($value))->getTimestamp());
                         $row[] = $value;
+
+
                         //Transformation liste ::
                     } else if ($field->getCustomFieldType() == 2) {
 
@@ -937,7 +933,18 @@ class ExtractionController extends Controller
                         }
 
                         //Pas de transformation
-                    } else {
+
+
+                    //tagger : oui/vide
+                } else if ($field->getType() == "tagger" && $field->getCustomFieldType() == 4) {
+                        if($value == "1"){
+                            $value = "oui";
+                        }else{
+                            $value = "";
+                        }
+                    //Pas de transformation
+                }
+                else {
                         if ($charset == "utf8") {
                             $row[] = $value;
                         } else {

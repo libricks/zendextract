@@ -39,6 +39,7 @@
                         <option <?php echo $field->getCustomFieldType() == "3" ? "selected" : "" ?> value="3">Texte
                             fixe
                         </option>
+                        <option <?php echo $field->getCustomFieldType() == "4" ? "selected" : "" ?> value="4">oui/vide</option>
                     </select>
                 </td>
                 <!--                <td></td>-->
@@ -47,7 +48,7 @@
                         <label>Format de la date</label>
                         <input name="fields[<?php echo $field->id ?>][date_format]" class="form-control" type="text"
                                value="<?php echo $field->getDateFormat() ?>"/>
-                        <a href="http://php.net/manual/fr/function.strftime.php" target="_blank">format</a>
+                        <a href="https://www.php.net/manual/fr/datetime.format.php" target="_blank">format</a>
                     </div>
                     <div data-option="2">
                         <label>Nombre de colonnes</label>
