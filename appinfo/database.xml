@@ -165,7 +165,7 @@
             <field>
                 <name>column_name</name>
                 <type>text</type>
-                <length>100</length>
+                <length>1000</length>
             </field>
             <field>
                 <name>custom_field_type</name>
