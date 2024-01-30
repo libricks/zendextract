@@ -134,7 +134,7 @@
             </field>
             <field>
                 <name>form_id</name>
-                <type>bigint</type>
+                <field-type>bigint</field-type>
                 <notnull>true</notnull>
             </field>
             <field>
