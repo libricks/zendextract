@@ -154,7 +154,7 @@
                 <name>title</name>
                 <type>text</type>
                 <notnull>true</notnull>
-                <length>100</length>
+                <length>1000</length>
             </field>
             <field>
                 <name>type</name>
