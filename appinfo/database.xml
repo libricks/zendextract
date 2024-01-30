@@ -130,7 +130,7 @@
                 <name>field_id</name>
                 <type>text</type>
                 <notnull>true</notnull>
-                <length>20</length>
+                <length>50</length>
             </field>
             <field>
                 <name>form_id</name>
