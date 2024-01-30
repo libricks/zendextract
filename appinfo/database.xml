@@ -79,9 +79,8 @@
             </field>
             <field>
                 <name>form_id</name>
-                <type>integer</type>
+                <type>text</type>
                 <notnull>true</notnull>
-                <length>4</length>
             </field>
             <field>
                 <name>extraction_id</name>
