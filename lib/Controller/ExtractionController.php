@@ -413,6 +413,8 @@ class ExtractionController extends Controller
                     $f->setType("conversation");
                     $f->setIsActive(false);
                     $f->setOrderIndex($order_index++);
+                    $f->setFieldId(0);
+                    $f->setFormId(0);
                     $this->fieldMapper->insert($f);
                 }
             }
