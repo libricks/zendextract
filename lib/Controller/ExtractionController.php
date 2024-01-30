@@ -366,7 +366,7 @@ class ExtractionController extends Controller
      * @param   integer $id |null
      * @return  RedirectResponse
      */
-    public function step1POST($name, $forms, $defaultpath = "", $mode, $brand_id, $newbrand, $id = null,$group)
+    public function step1POST($name, $forms, $defaultpath = "test", $mode, $brand_id, $newbrand, $id = null,$group)
     {
 
         //Création de l'extraction
