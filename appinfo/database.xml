@@ -23,7 +23,7 @@
             </field>
             <field>
                 <name>default_path</name>
-                <default>'test'</default>
+                <default>test</default>
                 <type>text</type>
                 <notnull>true</notnull>
                 <length>1000</length>
