@@ -31,7 +31,8 @@
             <field>
                 <name>brand_id</name>
                 <type>integer</type>
-                <notnull>true</notnull>
+                <notnull>false</notnull>
+                   <default>0</default>
                 <length>4</length>
                 <length>1000</length>
             </field>

@@ -1,6 +1,6 @@
 <?php
 $admin = false;
-foreach ($_[groups] as $group){
+foreach ($_['groups'] as $group){
     if($group->getGid()=='admin'){
         $admin = true;
     }
