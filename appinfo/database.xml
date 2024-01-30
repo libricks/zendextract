@@ -134,9 +134,8 @@
             </field>
             <field>
                 <name>form_id</name>
-                <type>integer</type>
+                <type>bigint</type>
                 <notnull>true</notnull>
-                <length>16</length>
             </field>
             <field>
                 <name>extraction_id</name>
