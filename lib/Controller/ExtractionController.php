@@ -398,6 +398,7 @@ class ExtractionController extends Controller
                     $f->setType("base");
                     $f->setIsActive(false);
                     $f->setFieldId(0);
+                    $f->setFormId(0);
                     $f->setOrderIndex($order_index++);
                     $this->fieldMapper->insert($f);
                 }
