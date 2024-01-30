@@ -52,6 +52,7 @@ class ZendDeskAPI
             $result = $response->body;
             return $result;
         } catch (Exception $e) {
+            $this->logger->error("Problème API : " . $e->getMessage() . " ---------" . $response, array('app' => $this->appName));
             return null;
         }
     }
