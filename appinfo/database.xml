@@ -136,7 +136,7 @@
                 <name>form_id</name>
                 <type>integer</type>
                 <notnull>true</notnull>
-                <length>4</length>
+                <length>8</length>
             </field>
             <field>
                 <name>extraction_id</name>
