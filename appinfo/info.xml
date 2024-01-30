@@ -5,7 +5,7 @@
     <name>Zendesk Xtractor</name>
     <summary>Interface de communication avec ZenDesk</summary>
     <description><![CDATA[Cette application permet de se connecter à l&#39;API REST de ZenDesk afin de générer une extractions des tickets d&#39;assistance de la plateforme dans un fichier téléchargeable au format CSV (Comma-separated values).]]></description>
-    <version>0.45</version>
+    <version>0.46</version>
     <licence>AGPL</licence>
     <author mail="contact@libricks.fr" homepage="http://www.libricks.fr/">Marc-Henri Pamiseux</author>
     <namespace>ZendExtract</namespace>
