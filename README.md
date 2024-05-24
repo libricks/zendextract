@@ -1,30 +1,25 @@
-# zendextract
-NextCloud module to generate a CSV file containing some data extracted from a ZenDesk subscription.
+# Zend Extract
 
+A template to get started with Nextcloud app development.
 
-# ZenDesk Xtractor
-[![GitHub license](https://img.shields.io/badge/license-AGPLv3-blue.svg)](https://raw.githubusercontent.com/libricks/zendextract/master/COPYING)
+## Usage
 
-**Nextcloud zendeXtract provides an application to retrieve ZendDesk tickets into a CSV file**
+- To get started easily use the [Appstore App generator](https://apps.nextcloud.com/developer/apps/generate) to
+  dynamically generate an App based on this repository with all the constants prefilled.
+- Alternatively you can use the "Use this template" button on the top of this page to create a new repository based on
+  this repository. Afterwards adjust all the necessary constants like App ID, namespace, descriptions etc.
 
-![](screenshots/1.png)
+Once your app is ready follow the [instructions](https://nextcloudappstore.readthedocs.io/en/latest/developer.html) to
+upload it to the Appstore.
 
-## Installation
+## Resources
 
-In your Nextcloud, simply navigate to «Apps», choose the category «Tools», find the ZendeXtract app and enable it.
-Then open the Zend Xtractor app from the app menu.
+### Documentation for developers:
 
-## Maintainers
+- General documentation and tutorials: https://nextcloud.com/developer
+- Technical documentation: https://docs.nextcloud.com/server/latest/developer_manual
 
-- [Marc-Henri Pamiseux](https://github.com/marc-henri)
-- [Tawfiq Cadi Tazi](https://github.com/tawfiqct)
+### Help for developers:
 
-If you’d like to join, just go through the [issue list](https://github.com/libricks/zendextract/issues/) and fix some. :)
-
-## Requirements
-
-- Nextcloud 11+
-
-## Support
-
-If you need assistance or want to ask a question about Zend Xtractor, you are welcome to [ask for support] by mail. If you have found a bug, feel free to open a new Issue on GitHub.
+- Official community chat: https://cloud.nextcloud.com/call/xs25tz5y
+- Official community forum: https://help.nextcloud.com/c/dev/11
