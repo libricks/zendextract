@@ -57,8 +57,8 @@ class Version0053Date20240524091332 extends SimpleMigrationStep {
                                 'notnull' => true,
                         ]);
                         $table->setPrimaryKey(['id']);
-                        $table->addUniqueIndex(['name'], 'name_index');
-                        $table->addIndex(['brand_id'], 'brand_index');
+                        $table->addUniqueIndex(['name'], 'extractions_name_index');
+                        $table->addIndex(['brand_id'], 'extractions_brand_index');
                 }
 
                 if (!$schema->hasTable('zendextract_forms')) {
@@ -169,7 +169,7 @@ class Version0053Date20240524091332 extends SimpleMigrationStep {
                                 'length' => 100,
                         ]);
                         $table->setPrimaryKey(['id']);
-                        $table->addUniqueIndex(['name'], 'name_index');
+                        $table->addUniqueIndex(['name'], 'brands_name_index');
                 }
                 return $schema;
         }

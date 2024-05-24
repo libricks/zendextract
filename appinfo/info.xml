@@ -36,6 +36,13 @@
         <admin>OCA\ZendExtract\Settings\Admin</admin>
     </settings>
 
-    <standalone />
-
+	<navigations>
+		<navigation>
+			<id>zendextract</id>
+			<name>Zend Extract</name>
+			<route>zendextract.page.index</route>
+			<icon>app.svg</icon>
+			<type>link</type>
+		</navigation>
+	</navigations>
 </info>

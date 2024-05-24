@@ -9,3 +9,15 @@ out
 gen
 composer.phar
 vendor/
+
+/.idea/
+/*.iml
+
+/vendor/
+/vendor-bin/*/vendor/
+
+/.php-cs-fixer.cache
+/tests/.phpunit.cache
+
+/node_modules/
+/js/
