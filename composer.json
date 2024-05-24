@@ -2,13 +2,12 @@
 	"name": "libricks/zendextract",
 	"description": "",
 	"license": "AGPL-3.0-or-later",
-	"homepage": "https://github.com/libricks/zendextract",
 
 	"authors": [
 		{
 			"name": "Toto",
 			"email": "toto@toto.com",
-			"homepage": ""
+			"homepage": "https://github.com/libricks/zendextract",
 		}
 	],
 	"autoload": {
