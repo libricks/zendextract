@@ -7,7 +7,7 @@
 		{
 			"name": "Toto",
 			"email": "toto@toto.com",
-			"homepage": "https://github.com/libricks/zendextract",
+			"homepage": "https://github.com/libricks/zendextract"
 		}
 	],
 	"autoload": {
