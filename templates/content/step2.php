@@ -1,7 +1,7 @@
 <h1 id="step2">Etape 2 - Sélection des champs</h1>
 <h2>Extraction : <?php echo $_["extraction"]->getName() ?> </h2>
 <form class="form-horizontal" method="post"
-      action="<?php echo $_["webRoot"] ?>/index.php/apps/zendextract/extraction/step2POST">
+      action="<?php echo $_["webRoot"] ?>/apps/zendextract/extraction/step2POST">
     <table class="table table-bordered table-striped table-hover">
         <tr>
             <th>Formulaire</th>
@@ -23,14 +23,14 @@
 
 
     <input type="hidden" name="id" value="<?php echo $_["extraction"]->id ?>"/>
-    <a href="<?php echo $_["webRoot"] ?>/index.php/apps/zendextract/extraction/step/1/<?php echo $_["extraction"]->id ?>"
+    <a href="<?php echo $_["webRoot"] ?>/apps/zendextract/extraction/step/1/<?php echo $_["extraction"]->id ?>"
        class="btn btn-success">Précédent</a>
     <button type="submit" class="btn btn-success">Suivant</button>
 
 </form>
 
 <form class="form-horizontal" method="post" style="margin-top: 10px;margin-bottom: 10px;"
-      action="<?php echo $_["webRoot"] ?>/index.php/apps/zendextract/extraction/step2UPDATE">
+      action="<?php echo $_["webRoot"] ?>/apps/zendextract/extraction/step2UPDATE">
 
     <input type="hidden" name="id" value="<?php echo $_["extraction"]->id ?>"/>
     <button type="submit" class="btn btn-success">Mettre à jour les champs</button>

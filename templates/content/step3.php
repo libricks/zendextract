@@ -1,7 +1,7 @@
 <h1 id="step3">Etape 3- Configuration des champs</h1>
 <h2>Extraction : <?php echo $_["extraction"]->getName() ?> </h2>
 <form class="form-horizontal" method="post"
-      action="<?php echo $_["webRoot"] ?>/index.php/apps/zendextract/extraction/step3POST">
+      action="<?php echo $_["webRoot"] ?>/apps/zendextract/extraction/step3POST">
     <table class="table table-bordered table-striped table-hover sortable">
         <tr>
             <th>Formulaire</th>
@@ -88,7 +88,7 @@
 
 
     <input type="hidden" name="id" value="<?php echo $_["extraction"]->id ?>"/>
-    <a href="<?php echo $_["webRoot"] ?>/index.php/apps/zendextract/extraction/step/2/<?php echo $_["extraction"]->id ?>"
+    <a href="<?php echo $_["webRoot"] ?>/apps/zendextract/extraction/step/2/<?php echo $_["extraction"]->id ?>"
        class="btn btn-success">Précédent</a>
     <button type="submit" class="btn btn-success">Sauvegarder</button>
 

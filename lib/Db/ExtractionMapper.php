@@ -13,12 +13,16 @@
 
 namespace OCA\ZendExtract\Db;
 
+use OCP\DB\Exception;
+use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\IDBConnection;
-use OCP\AppFramework\Db\Mapper;
-class ExtractionMapper extends Mapper
+use OCP\AppFramework\Db\MultipleObjectsReturnedException;
+use OCP\AppFramework\Db\QBMapper;
+
+class ExtractionMapper extends QBMapper
 {
     public function __construct(IDBConnection $db) {
-        parent::__construct($db, 'zendextract_extractions');
+        parent::__construct($db, 'ze_extractions');
     }
 
     /**
@@ -33,8 +37,15 @@ class ExtractionMapper extends Mapper
 
 
     public function findAll() {
-        $sql = 'SELECT * FROM `*PREFIX*zendextract_extractions` ORDER BY CONVERT(`name`USING UTF8) ';
-        return $this->findEntities($sql);
+        // $sql = 'SELECT * FROM `*PREFIX*zendextract_extractions` ORDER BY CONVERT(`name`USING UTF8) ';
+        // return $this->findEntities($sql);
+        $queryBuilder = $this->db->getQueryBuilder();
+
+        $queryBuilder->select('*')
+            ->from('ze_extractions')
+            ->orderBy('name');
+
+        return $this->findEntities($queryBuilder);
     }
     public function findbyGroupId($id){
         $sql = 'SELECT * FROM `*PREFIX*zendextract_extractions` ' .

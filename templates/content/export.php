@@ -9,7 +9,7 @@ foreach ($_['groups'] as $group){
 
 ?>
 
-<form class="" method="post" action="<?php echo $_["webRoot"] ?>/index.php/apps/zendextract/extraction/generate">
+<form class="" method="post" action="<?php echo $_["webRoot"] ?>/apps/zendextract/extraction/generate">
   <?php  if ($admin) : ?>
     <div class="form-group">
         <label for="extractions">Marque</label>

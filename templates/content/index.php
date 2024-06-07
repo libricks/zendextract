@@ -33,13 +33,13 @@ if ($admin==false){
             <td><?php echo $extraction->getName() ?></td>
 
             <td>
-                <a  class="btn btn-warning" href="<?php echo $_["webRoot"] ?>/index.php/apps/zendextract/extraction/step/1/<?php echo $extraction->id ?>">
+                <a  class="btn btn-warning" href="<?php echo $_["webRoot"] ?>/apps/zendextract/extraction/step/1/<?php echo $extraction->id ?>">
                     <i class="fa fa-pencil" aria-hidden="true"></i>  Modifier
                 </a>
-                <a class="btn btn-info" href="<?php echo $_["webRoot"] ?>/index.php/apps/zendextract/export?id=<?php echo $extraction->id ?>">
+                <a class="btn btn-info" href="<?php echo $_["webRoot"] ?>/apps/zendextract/export?id=<?php echo $extraction->id ?>">
                     <i class="fa fa-file-text" aria-hidden="true"></i>   Exporter
                 </a>
-                <a class="btn btn-danger" href="<?php echo $_["webRoot"] ?>/index.php/apps/zendextract/extraction/delete/<?php echo $extraction->id ?>">
+                <a class="btn btn-danger" href="<?php echo $_["webRoot"] ?>/apps/zendextract/extraction/delete/<?php echo $extraction->id ?>">
                     <i class="fa fa-trash" aria-hidden="true"></i>   Supprimer
                 </a>
             </td>
@@ -48,4 +48,4 @@ if ($admin==false){
     <?php endforeach; ?>
 </table>
 
-<a href="<?php echo $_["webRoot"] ?>/index.php/apps/zendextract/extraction/create" class="btn btn-success">Créer une nouvelle extraction</a>
+<a href="<?php echo $_["webRoot"] ?>/apps/zendextract/extraction/create" class="btn btn-success">Créer une nouvelle extraction</a>

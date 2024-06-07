@@ -13,12 +13,16 @@
 
 namespace OCA\ZendExtract\Db;
 
+use OCP\DB\Exception;
+use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\IDBConnection;
-use OCP\AppFramework\Db\Mapper;
-class FormMapper extends Mapper
+use OCP\AppFramework\Db\MultipleObjectsReturnedException;
+use OCP\AppFramework\Db\QBMapper;
+
+class FormMapper extends QBMapper
 {
     public function __construct(IDBConnection $db) {
-        parent::__construct($db, 'zendextract_forms');
+        parent::__construct($db, 'ze_forms');
     }
 
     /**

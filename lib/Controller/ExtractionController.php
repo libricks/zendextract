@@ -17,12 +17,9 @@
  */
 
 namespace OCA\ZendExtract\Controller;
-error_reporting(E_ALL);
-ini_set("display_errors", 1);
-/**
- *
- */
-require_once __DIR__ . '/../Vendor/autoload.php';
+
+
+use OCA\ZendExtract\AppInfo\Application;
 
 //use Zendesk\API\HttpClient as ZendeskAPI;
 
@@ -50,6 +47,9 @@ use OCA\ZendExtract\Service\ExtractionStorage;
 use OCP\Files\IRootFolder;
 use OCP\ILogger;
 use \DateTime;
+
+error_reporting(E_ALL);
+ini_set("display_errors", 1);
 
 /**
  *
@@ -209,7 +209,7 @@ class ExtractionController extends Controller
 
         //tester si l'utilisateur est dans le grupe admin
         if(!$isAdmin){
-            return new RedirectResponse($this->webRoot . '/index.php/apps/zendextract/export');
+            return new RedirectResponse($this->webRoot . '/apps/zendextract/export');
         }else{
             $extractions = $this->extractionMapper->findAll();
             $groups = $this->groupMapper->findAll();
@@ -349,7 +349,7 @@ class ExtractionController extends Controller
         $this->formMapper->deleteByExtractionId($id);
         $this->extractionMapper->delete($extraction);
 
-        return new RedirectResponse($this->webRoot . '/index.php/apps/zendextract/');
+        return new RedirectResponse($this->webRoot . '/apps/zendextract/');
     }
     // }}}
 
@@ -366,9 +366,8 @@ class ExtractionController extends Controller
      * @param   integer $id |null
      * @return  RedirectResponse
      */
-    public function step1POST($name, $forms, $defaultpath = "test", $mode, $brand_id = 0, $newbrand, $id = null,$group)
+    public function step1POST($name, $forms, $mode, $newbrand,$group, $id = null, $brand_id = 0, $defaultpath = "test")
     {
-
         //Création de l'extraction
 
         if ($mode == "create") {
@@ -382,7 +381,7 @@ class ExtractionController extends Controller
             } catch (\Exception $e) {
                 //Si l'extraction est déjà créée
                 $this->logger->error("Extraction déjà créée " . $e->getMessage(), array('app' => $this->appName));
-                return new RedirectResponse($this->webRoot . '/index.php/apps/zendextract/');
+                return new RedirectResponse($this->webRoot . '/apps/zendextract/');
             }
             $order_index = 1000;
 
@@ -422,6 +421,7 @@ class ExtractionController extends Controller
 
             //Création des champs pour chaque formulaire
             foreach ($forms as $form) {
+           
                 $result = $this->zendDeskAPI->get("/api/v2/ticket_forms/$form.json");
 
                 $form = new Form();
@@ -481,7 +481,7 @@ class ExtractionController extends Controller
         $this->extractionMapper->update($extraction);
 
 
-        return new RedirectResponse($this->webRoot . "/index.php/apps/zendextract/extraction/step/2/" . $extraction->id);
+        return new RedirectResponse($this->webRoot . "/apps/zendextract/extraction/step/2/" . $extraction->id);
     }
     // }}}
 
@@ -510,7 +510,7 @@ class ExtractionController extends Controller
 
         }
 
-        return new RedirectResponse($this->webRoot . "/index.php/apps/zendextract/extraction/step/3/" . $id);
+        return new RedirectResponse($this->webRoot . "/apps/zendextract/extraction/step/3/" . $id);
     }
     // }}}
 
@@ -557,7 +557,7 @@ class ExtractionController extends Controller
                 }
             }
         }
-        return new RedirectResponse($this->webRoot . "/index.php/apps/zendextract/extraction/step/2/" . $id);
+        return new RedirectResponse($this->webRoot . "/apps/zendextract/extraction/step/2/" . $id);
     }
     // }}}
 
@@ -595,7 +595,7 @@ class ExtractionController extends Controller
             $i++;
         }
 
-        return new RedirectResponse($this->webRoot . "/index.php/apps/zendextract/extraction/step/3/" . $id);
+        return new RedirectResponse($this->webRoot . "/apps/zendextract/extraction/step/3/" . $id);
     }
     // }}}
 

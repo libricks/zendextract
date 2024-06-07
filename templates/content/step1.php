@@ -2,7 +2,7 @@
 <h2></h2>
 
 <form class="form-horizontal" method="post"
-      action="<?php echo $_["webRoot"] ?>/index.php/apps/zendextract/extraction/step1POST">
+      action="<?php echo $_["webRoot"] ?>/apps/zendextract/extraction/step1POST">
     <input type="hidden" name="id" value="<?php echo $_["extraction"]->id ?>"/>
     <input type="hidden" name="mode" value="<?php echo $_["mode"] ?>"/>
     <div class="form-group ">
