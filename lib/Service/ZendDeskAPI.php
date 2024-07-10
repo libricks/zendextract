@@ -12,6 +12,8 @@
  */
 namespace OCA\ZendExtract\Service;
 use \OCP\IConfig;
+use \Httpful;
+
 class ZendDeskAPI
 {
     private $subdomain;
@@ -36,7 +38,7 @@ class ZendDeskAPI
                 ->send();
             $result = $response->body;
             return $result;
-        } catch (Httpful\Exception $e) {
+        } catch (\Httpful\Exception $e) {
             $this->logger->error("Problème lors de la récupération des tickets " . $e->getMessage(), array('app' => $this->appName));
         } catch (Exception $e) {
             $this->logger->error("Problème API : " . $e->getMessage() . " ---------" . $response, array('app' => $this->appName));

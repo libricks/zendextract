@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace OCA\ZendExtract\AppInfo;
 
+
+
+use OCA\ZendExtract\Dashboard\SimpleWidget;
 use OCP\AppFramework\App;
 use OCP\AppFramework\Bootstrap\IBootContext;
 use OCP\AppFramework\Bootstrap\IBootstrap;

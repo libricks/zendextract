@@ -6,6 +6,7 @@
     <summary>Interface de communication avec ZenDesk</summary>
     <description><![CDATA[Cette application permet de se connecter à l&#39;API REST de ZenDesk afin de générer une extractions des tickets d&#39;assistance de la plateforme dans un fichier téléchargeable au format CSV (Comma-separated values).]]></description>
     <version>0.53</version>
+
     <licence>AGPL</licence>
     <author mail="contact@libricks.fr" homepage="http://www.libricks.fr/">Marc-Henri Pamiseux</author>
     <namespace>ZendExtract</namespace>
@@ -28,21 +29,22 @@
 
     <ocsid></ocsid>
     <dependencies>
-        <owncloud min-version="9.2"/>
-        <nextcloud min-version="11"/>
+        <nextcloud min-version="11" max-version="40"/>
+
     </dependencies>
 
     <settings>
         <admin>OCA\ZendExtract\Settings\Admin</admin>
     </settings>
 
-	<navigations>
-		<navigation>
-			<id>zendextract</id>
-			<name>Zend Extract</name>
-			<route>zendextract.page.index</route>
-			<icon>app.svg</icon>
-			<type>link</type>
-		</navigation>
-	</navigations>
+    <navigations>
+        <navigation>
+            <id>zendextract</id>
+            <name>Zend Extract</name>
+            <route>zendextract.extraction.index</route>
+            <order>0</order>
+            <icon>app.svg</icon>
+            <type>link</type>
+        </navigation>
+    </navigations>
 </info>

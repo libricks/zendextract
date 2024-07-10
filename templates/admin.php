@@ -1,6 +1,8 @@
 <?php
-\OCP\Util::addScript('zendextract', 'admin');
+/** @var $l \OCP\IL10N */
+/** @var $_ array */
 
+script('zendextract', 'admin');
 ?>
 <div id="zendextract">
     <div class="section">
@@ -37,3 +39,4 @@
         <input type="submit" id="submitOWMApiKey" value="<?php p($l->t('Save')); ?>"/>
     </div>
 </div>
+

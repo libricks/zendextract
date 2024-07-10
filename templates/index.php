@@ -16,21 +16,20 @@ style('zendextract', 'vendor/font-awesome-4.7.0/css/font-awesome.min');
 style('zendextract', 'style');
 ?>
 
-<div id="app">
-    <div id="app-navigation">
 
-        <?php print_unescaped($this->inc('navigation/index')); ?>
-        <?php print_unescaped($this->inc('settings/index')); ?>
+<div id="app-navigation">
+
+                <?php print_unescaped($this->inc('navigation/index')); ?>
 
 
-    </div>
 
-    <div id="app-content">
-        <div id="app-content-wrapper">
-            <div class="container-fluid">
-                <?php print_unescaped($this->inc("content/".$_['view'])); ?>
-            </div>
-        </div>
+</div>
+
+<div id="app-content">
+    <div class="container-fluid">
+        <?php print_unescaped($this->inc("content/".$_['view'])); ?>
     </div>
 </div>
+
+
 

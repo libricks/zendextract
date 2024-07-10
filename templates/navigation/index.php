@@ -1,5 +1,7 @@
+<nav class="app-navigation-vue">
 
-    <ul >
+
+    <ul class="app-navigation-list app-navigation__list" >
         <?php
 
 
@@ -12,10 +14,11 @@
 
         if ($admin) : ?>
 
-        <li><a href="/apps/zendextract/">Extractions</a></li>
+        <li class="app-navigation-entry-wrapper"><a href="/apps/zendextract/">Extractions</a></li>
         <?php  endif; ?>
-        <li>
+        <li class="app-navigation-entry-wrapper">
             <a href="/apps/zendextract/export">Export</a>
 
         </li>
     </ul>
+</nav>
