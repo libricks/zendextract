@@ -101,7 +101,7 @@ $(function () {
             if ($form[0].checkValidity()) {
                 $(this).hide();
                 $(this).next().show();
-                $form.submit();
+               // $form.submit();
             } else {
                 $e.preventDefault();
             }

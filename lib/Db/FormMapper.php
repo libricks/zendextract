@@ -35,61 +35,99 @@ class FormMapper extends QBMapper
         return $this->findEntity($sql, [$id]);
     }
 
-	public function findNameByExtractionId($extractionId)
-	{
+    public function findNameByExtractionId($extractionId)
+    {
 
-		$sql = 'SELECT `name` FROM `*PREFIX*zendextract_forms` ' .
-		       'WHERE `extraction_id` = ?';
+//        $sql = 'SELECT `name` FROM `*PREFIX*zendextract_forms` ' .
+//            'WHERE `extraction_id` = ?';
+//
+//
+//        $stmt = $this->execute($sql, [$extractionId]);
+//        $ids = array();
+//        while($row = $stmt->fetch()){
+//            $names[] = $row["name"];
+//        }
+//
+//
+//
+//
+//        $stmt->closeCursor();
+//
+//        return $names;
 
+        //en query builder
+        $qb = $this->db->getQueryBuilder();
+        $qb->select('name')
+            ->from('ze_forms')
+            ->where($qb->expr()->eq('extraction_id', $qb->createNamedParameter($extractionId)));
+        return $this->findEntities($qb);
 
-		$stmt = $this->execute($sql, [$extractionId]);
-		$ids = array();
-		while($row = $stmt->fetch()){
-			$names[] = $row["name"];
-		}
-
-
-
-
-		$stmt->closeCursor();
-
-		return $names;
-	}
+    }
 
 
     public function findByExtractionId($extractionId)
     {
 
-        $sql = 'SELECT form_id FROM `*PREFIX*zendextract_forms` ' .
-            'WHERE `extraction_id` = ?';
+//        $sql = 'SELECT form_id FROM `*PREFIX*zendextract_forms` ' .
+//            'WHERE `extraction_id` = ?';
+//
+//
+//        $stmt = $this->execute($sql, [$extractionId]);
+//        $ids = array();
+//        while($row = $stmt->fetch()){
+//            $ids[] = $row["form_id"];
+//        }
+//
+//
+//
+//
+//        $stmt->closeCursor();
+//
+//        return $ids;
 
-
-        $stmt = $this->execute($sql, [$extractionId]);
-        $ids = array();
-        while($row = $stmt->fetch()){
-            $ids[] = $row["form_id"];
-        }
-
-
-
-
-        $stmt->closeCursor();
-
-        return $ids;
+        //en query builder
+        $qb = $this->db->getQueryBuilder();
+        $qb->select('form_id')
+            ->from('ze_forms')
+            ->where($qb->expr()->eq('extraction_id', $qb->createNamedParameter($extractionId)));
+        return $this->findEntities($qb);
     }
 
     public function deleteByExtractionId($extractionId)
     {
 
-        $sql = 'DELETE fields FROM `*PREFIX*zendextract_fields` as fields
-                INNER JOIN `*PREFIX*zendextract_forms` as forms ON fields.form_id = forms.id
-                WHERE forms.extraction_id = ?';
-        $stmt = $this->execute($sql, [$extractionId]);
+//        $sql = 'DELETE fields FROM `*PREFIX*zendextract_fields` as fields
+//                INNER JOIN `*PREFIX*zendextract_forms` as forms ON fields.form_id = forms.id
+//                WHERE forms.extraction_id = ?';
+//        $stmt = $this->execute($sql, [$extractionId]);
+//
+//        $sql = 'DELETE FROM `*PREFIX*zendextract_forms` WHERE extraction_id = ?';
+//        $stmt = $this->execute($sql, [$extractionId]);
+//
+//        $stmt->closeCursor();
 
-        $sql = 'DELETE FROM `*PREFIX*zendextract_forms` WHERE extraction_id = ?';
-        $stmt = $this->execute($sql, [$extractionId]);
 
-        $stmt->closeCursor();
+        $qb = $this->db->getQueryBuilder();
+        $qb->select('ze_fields.id')
+            ->from('ze_fields', 'ze_fields')
+            ->innerJoin('ze_fields', 'ze_forms', 'ze_forms', 'ze_fields.form_id = ze_forms.id')
+            ->where($qb->expr()->eq('ze_forms.extraction_id', $qb->createNamedParameter($extractionId)));
+
+        $results = $qb->executeQuery()->fetchAll();
+        $fieldIds = array_column($results, 'id');
+
+        if (!empty($fieldIds)) {
+            $qb = $this->db->getQueryBuilder();
+            $qb->delete('ze_fields')
+                ->from('ze_fields')
+                ->where($qb->expr()->in('id', $qb->createNamedParameter($fieldIds, IQueryBuilder::PARAM_INT_ARRAY)));
+            $qb->executeStatement();
+        }
+
+        $qb = $this->db->getQueryBuilder();
+        $qb->delete('ze_forms')
+            ->where($qb->expr()->eq('extraction_id', $qb->createNamedParameter($extractionId)));
+        $qb->executeStatement();
 
     }
 //

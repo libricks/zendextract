@@ -38,7 +38,28 @@ class Field extends Entity
 
     public function __construct() {
         // add types in constructor
-//       $this->addType('name', 'string');
-//        $this->addType('defaultpath', 'string');
+        $this->addType('formId', 'integer');
+        $this->addType('extractionId', 'integer');
+        $this->addType('fieldId', 'integer');
+        $this->addType('orderIndex', 'integer');
+        $this->addType('title', 'string');
+        $this->addType('type', 'string');
+        $this->addType('columnName', 'string');
+        $this->addType('customFieldType', 'string');
+        $this->addType('dateFormat', 'string');
+        $this->addType('nbColumns', 'integer');
+        $this->addType('columnsNames', 'string');
+        $this->addType('customText', 'string');
+        $this->addType('isActive', 'boolean');
+        $this->addType('isMerged', 'boolean');
+        $this->addType('mergeName', 'string');
+        $this->addType('formName', 'string');
+
+
+
+
+
+
     }
+
 }

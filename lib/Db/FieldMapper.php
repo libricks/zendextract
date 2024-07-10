@@ -25,12 +25,13 @@ class FieldMapper extends QBMapper
 {
     public function __construct(IDBConnection $db)
     {
-        parent::__construct($db, 'ze_fields');
+        parent::__construct($db, 'ze_fields', Field::class);
     }
 
     /**
      * @throws \OCP\AppFramework\Db\DoesNotExistException if not found
      * @throws \OCP\AppFramework\Db\MultipleObjectsReturnedException if more than one result
+     * @throws Exception
      */
     public function find($id)
     {
@@ -39,7 +40,15 @@ class FieldMapper extends QBMapper
             ->from('ze_fields')
             ->where($query->expr()->eq('id', $query->createNamedParameter($id)));
 
-        return $this->findEntity($query);
+
+
+
+        try {
+            return $this->findEntity($query);
+        }
+        catch (Exception $e) {
+            return null;
+        }
         // $sql = 'SELECT * FROM `*PREFIX*zendextract_fields` ' .
         //     'WHERE `id` = ?';
         // return $this->findEntity($sql, [$id]);
@@ -63,22 +72,43 @@ class FieldMapper extends QBMapper
 
     public function disactiveAllFieldsByExtraction($extractionId)
     {
-        $query = $this->db->getQueryBuilder();
-        $query->update('ze_fields', 'fields')
+
+        $qb = $this->db->getQueryBuilder();
+        $qb->select('fields.id')
+            ->from('ze_fields', 'fields')
             ->innerJoin('fields', 'ze_forms', 'forms', 'forms.id = fields.form_id')
             ->innerJoin('forms', 'ze_extractions', 'extractions', 'forms.extraction_id = extractions.id')
-            ->set('is_active', $query->expr()->literal(false))
-            ->where($query->expr()->eq('extractions.id', $query->createNamedParameter($extractionId)));
+            ->where($qb->expr()->eq('extractions.id', $qb->createNamedParameter($extractionId)));
 
-        $this->execute($query);
+        $results = $qb->executeQuery()->fetchAll();
+        $fieldIds = array_column($results, 'id');
+
+        if (!empty($fieldIds)) {
+            $qb = $this->db->getQueryBuilder();
+            $qb->update('ze_fields')
+                ->set('is_active', $qb->createNamedParameter(0, IQueryBuilder::PARAM_INT))
+                ->where($qb->expr()->in('id', $qb->createNamedParameter($fieldIds, IQueryBuilder::PARAM_INT_ARRAY)));
+            $qb->executeStatement();
+        }
+
 
         $query = $this->db->getQueryBuilder();
-        $query->update('ze_fields', 'fields')
+        $query->select('fields.id')
+            ->from('ze_fields', 'fields')
             ->innerJoin('fields', 'ze_extractions', 'extractions', 'fields.extraction_id = extractions.id')
-            ->set('is_active', $query->expr()->literal(false))
             ->where($query->expr()->eq('extractions.id', $query->createNamedParameter($extractionId)));
 
-        $this->execute($query);
+        $results = $query->executeQuery()->fetchAll();
+        $fieldIds = array_column($results, 'id');
+
+        if (!empty($fieldIds)) {
+            $query = $this->db->getQueryBuilder();
+            $query->update('ze_fields')
+                ->set('is_active', $query->createNamedParameter(0, IQueryBuilder::PARAM_INT)) // Assurez-vous que la valeur est un entier
+                ->where($query->expr()->in('id', $query->createNamedParameter($fieldIds, IQueryBuilder::PARAM_INT_ARRAY)));
+            $query->executeStatement();
+        }
+
         // $sql = 'UPDATE  `*PREFIX*zendextract_fields` as fields 
         //         INNER JOIN `*PREFIX*zendextract_forms` as forms ON forms.id = fields.form_id
         //         INNER JOIN `*PREFIX*zendextract_extractions` as extractions ON forms.extraction_id = extractions.id
@@ -109,7 +139,7 @@ class FieldMapper extends QBMapper
     public function findAllByExtractionId($extractionId, $selected = false)
     {
         $query = $this->db->getQueryBuilder();
-        $query->select('fields.*, forms.name as formname')
+        $query->select('fields.*')
             ->from('ze_fields', 'fields')
             ->innerJoin('fields', 'ze_extractions', 'extractions', $query->expr()->eq('extractions.id', $query->createNamedParameter($extractionId)))
             ->leftJoin('fields', 'ze_forms', 'forms', $query->expr()->eq('forms.id', 'fields.form_id'))
@@ -119,34 +149,41 @@ class FieldMapper extends QBMapper
             $query->andWhere($query->expr()->eq('fields.is_active', $query->expr()->literal(true)));
         }
 
+
         $query->orderBy('fields.order_index');
 
-        $stmt = $this->execute($query);
-        $fields = array();
-        while ($row = $stmt->fetch()) {
-            $f = new Field();
-            $f->setFieldId($row["field_id"]);
-            $f->id = $row["id"];
-            $f->setFormId($row["form_id"]);
-            $f->setExtractionId($row["extraction_id"]);
-            $f->setFieldId($row["field_id"]);
-            $f->setOrderIndex($row["order_index"]);
-            $f->setTitle($row["title"]);
-            $f->setType($row["type"]);
-            $f->setColumnName($row["column_name"]);
-            $f->setCustomFieldType($row["custom_field_type"]);
-            $f->setDateFormat($row["date_format"]);
-            $f->setNbColumns($row["nb_columns"]);
-            $f->setColumnsNames($row["columns_names"]);
-            $f->setCustomText($row["custom_text"]);
-            $f->setIsActive($row["is_active"]);
-            $f->setIsMerged($row["is_merged"]);
-            $f->setMergeName($row["merge_name"]);
-            $f->setFormName($row["formname"]);
-            $fields[] = $f;
-        }
+        $test  = $this->findEntities($query);
 
-        $stmt->closeCursor();
+        return $test;
+//        $fields = $query->executeQuery();
+//        var_dump($fields);die();
+//
+//        $stmt = $query->executeQuery($query);
+//        $fields = array();
+//        while ($row = $stmt->fetch()) {
+//            $f = new Field();
+//            $f->setFieldId($row["field_id"]);
+//            $f->id = $row["id"];
+//            $f->setFormId($row["form_id"]);
+//            $f->setExtractionId($row["extraction_id"]);
+//            $f->setFieldId($row["field_id"]);
+//            $f->setOrderIndex($row["order_index"]);
+//            $f->setTitle($row["title"]);
+//            $f->setType($row["type"]);
+//            $f->setColumnName($row["column_name"]);
+//            $f->setCustomFieldType($row["custom_field_type"]);
+//            $f->setDateFormat($row["date_format"]);
+//            $f->setNbColumns($row["nb_columns"]);
+//            $f->setColumnsNames($row["columns_names"]);
+//            $f->setCustomText($row["custom_text"]);
+//            $f->setIsActive($row["is_active"]);
+//            $f->setIsMerged($row["is_merged"]);
+//            $f->setMergeName($row["merge_name"]);
+//            $f->setFormName($row["formname"]);
+//            $fields[] = $f;
+//        }
+//
+//        $stmt->closeCursor();
         return $fields;
 
 // if($selected){
@@ -218,7 +255,7 @@ class FieldMapper extends QBMapper
             ->where($query->expr()->eq('extraction_id', $query->createNamedParameter($extractionId)))
             ->andWhere($query->expr()->eq('field_id', $query->createNamedParameter($fieldId)));
 
-        $stmt = $this->execute($query);
+        $stmt = $query->executeQuery($query);
         $row = $stmt->fetch();
         if (!$row) {
             $stmt->closeCursor();

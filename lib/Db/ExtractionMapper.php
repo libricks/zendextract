@@ -30,10 +30,19 @@ class ExtractionMapper extends QBMapper
      * @throws \OCP\AppFramework\Db\MultipleObjectsReturnedException if more than one result
      */
     public function find($id) {
-        $sql = 'SELECT * FROM `*PREFIX*zendextract_extractions` ' .
-            'WHERE `id` = ?';
-        return $this->findEntity($sql, [$id]);
-    }
+//        $sql = 'SELECT * FROM `*PREFIX*zendextract_extractions` ' .
+//            'WHERE `id` = ?';
+//        return $this->findEntity($sql, [$id]);
+//
+        //avec query builder
+         $queryBuilder = $this->db->getQueryBuilder();
+         $queryBuilder->select('*')
+             ->from('ze_extractions')
+             ->where($queryBuilder->expr()->eq('id', $queryBuilder->createNamedParameter($id)));
+         return $this->findEntity($queryBuilder);
+
+
+            }
 
 
     public function findAll() {
@@ -51,5 +60,12 @@ class ExtractionMapper extends QBMapper
         $sql = 'SELECT * FROM `*PREFIX*zendextract_extractions` ' .
             'WHERE `group_id` = ?';
         return $this->findEntities($sql, [$id]);
+        //avec query builder
+        $queryBuilder = $this->db->getQueryBuilder();
+        $queryBuilder->select('*')
+            ->from('ze_extractions')
+            ->where($queryBuilder->expr()->eq('group_id', $queryBuilder->createNamedParameter($id)));
+        return $this->findEntities($queryBuilder);
+
     }
 }

@@ -24,6 +24,7 @@ use OCA\ZendExtract\AppInfo\Application;
 //use Zendesk\API\HttpClient as ZendeskAPI;
 
 use Couchbase\Exception;
+use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\IRequest;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Http\DataResponse;
@@ -127,7 +128,6 @@ class ExtractionController extends Controller
     private $webRoot;
 
 
-
     // }}}
 
     // {{{ __construct()
@@ -162,11 +162,12 @@ class ExtractionController extends Controller
                                 IRootFolder $rootfolder,
                                 ILogger $logger,
                                 $webRoot,
-                                ZendDeskAPI $zendDeskAPI)
+                                ZendDeskAPI $zendDeskAPI )
     {
 
         parent::__construct($appName, $request);
 
+        $this->db = $db;
         $this->userId = $UserId;
         $this->brandMapper = $brandMapper;
         $this->extractionMapper = $extractionMapper;
@@ -368,6 +369,8 @@ class ExtractionController extends Controller
      */
     public function step1POST($name, $forms, $mode, $newbrand,$group, $id = null, $brand_id = 0, $defaultpath = "test")
     {
+
+
         //Création de l'extraction
 
         if ($mode == "create") {
@@ -400,6 +403,8 @@ class ExtractionController extends Controller
                     $f->setFormId(0);
                     $f->setOrderIndex($order_index++);
                     $this->fieldMapper->insert($f);
+
+
                 }
 
                 $conversation_fields = array("conversation niveau 2", "conversation niveau 3");
@@ -421,7 +426,7 @@ class ExtractionController extends Controller
 
             //Création des champs pour chaque formulaire
             foreach ($forms as $form) {
-           
+
                 $result = $this->zendDeskAPI->get("/api/v2/ticket_forms/$form.json");
 
                 $form = new Form();
@@ -667,7 +672,8 @@ class ExtractionController extends Controller
 
             //Filtrer les tickets par formulaire
             foreach ($forms as $form) {
-                $query = $query . " form:" . "\"".$form."\"";
+
+                $query = $query . " form:" . "\"".$form->getId()."\"";
             }
 
 
@@ -990,6 +996,7 @@ class ExtractionController extends Controller
         else
             $filename = $extraction_name . " -  semaines " . $week_from . " à " . $week_to . " (" . $year . ")";
         $file = $folder->newFile($filename . ".csv");
+
         $fileResource = $file->fopen('w');
 
         foreach ($arrayCSV as $row) {
@@ -998,7 +1005,7 @@ class ExtractionController extends Controller
 
 
 
-        fclose($file);
+        fclose($fileResource);
 
         //   echo memory_get_usage ()."\t fichier généré \t ".date("d/m/Y G:i:s")."\t<br/>";
         //die();
