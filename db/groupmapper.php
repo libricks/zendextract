@@ -18,7 +18,7 @@ use OCP\AppFramework\Db\Mapper;
 class groupMapper extends Mapper
 {
     public function __construct(IDBConnection $db) {
-        parent::__construct($db, 'zendextract_extractions');
+        parent::__construct($db, 'ze_extractions');
     }
 
     /**

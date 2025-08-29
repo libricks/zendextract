@@ -21,7 +21,7 @@ class FieldMapper extends Mapper
 {
     public function __construct(IDBConnection $db)
     {
-        parent::__construct($db, 'zendextract_fields');
+        parent::__construct($db, 'ze_fields');
     }
 
     /**
@@ -30,7 +30,7 @@ class FieldMapper extends Mapper
      */
     public function find($id)
     {
-        $sql = 'SELECT * FROM `*PREFIX*zendextract_fields` ' .
+        $sql = 'SELECT * FROM `*PREFIX*ze_fields` ' .
             'WHERE `id` = ?';
         return $this->findEntity($sql, [$id]);
     }
@@ -38,23 +38,23 @@ class FieldMapper extends Mapper
 
     public function findAllByFormId($formId, $limit, $offset)
     {
-        $sql = 'SELECT * FROM `*PREFIX*zendextract_fields WHERE form_id = ? ORDER BY order_index`';
+        $sql = 'SELECT * FROM `*PREFIX*ze_fields WHERE form_id = ? ORDER BY order_index`';
         return $this->findEntities($sql, [$formId], $limit, $offset);
     }
 
     public function disactiveAllFieldsByExtraction($extractionId)
     {
-        $sql = 'UPDATE  `*PREFIX*zendextract_fields` as fields 
-                INNER JOIN `*PREFIX*zendextract_forms` as forms ON forms.id = fields.form_id
-                INNER JOIN `*PREFIX*zendextract_extractions` as extractions ON forms.extraction_id = extractions.id
+        $sql = 'UPDATE  `*PREFIX*ze_fields` as fields 
+                INNER JOIN `*PREFIX*ze_forms` as forms ON forms.id = fields.form_id
+                INNER JOIN `*PREFIX*ze_extractions` as extractions ON forms.extraction_id = extractions.id
                 SET is_active = false
                 WHERE extractions.id = ?';
 
 
         $this->execute($sql, [$extractionId]);
 
-        $sql = 'UPDATE  `*PREFIX*zendextract_fields` as fields 
-                INNER JOIN `*PREFIX*zendextract_extractions` as extractions ON fields.extraction_id = extractions.id
+        $sql = 'UPDATE  `*PREFIX*ze_fields` as fields 
+                INNER JOIN `*PREFIX*ze_extractions` as extractions ON fields.extraction_id = extractions.id
                 SET is_active = false
                 WHERE extractions.id = ?';
 
@@ -77,9 +77,9 @@ if($selected){
     $sql = "
            
                     SELECT fields.*, forms.name as formname
-                    FROM `*PREFIX*zendextract_fields` as fields 
-                    INNER JOIN `*PREFIX*zendextract_extractions` as extractions ON extractions.id = fields.extraction_id
-                    LEFT JOIN `*PREFIX*zendextract_forms` as forms ON forms.id = fields.form_id
+                    FROM `*PREFIX*ze_fields` as fields 
+                    INNER JOIN `*PREFIX*ze_extractions` as extractions ON extractions.id = fields.extraction_id
+                    LEFT JOIN `*PREFIX*ze_forms` as forms ON forms.id = fields.form_id
                     WHERE fields.extraction_id = ? AND fields.is_active = 1
                    ORDER BY fields.order_index
                    
@@ -88,9 +88,9 @@ if($selected){
     $sql = "
            
                     SELECT fields.*, forms.name as formname
-                    FROM `*PREFIX*zendextract_fields` as fields 
-                    INNER JOIN `*PREFIX*zendextract_extractions` as extractions ON extractions.id = fields.extraction_id
-                    LEFT JOIN `*PREFIX*zendextract_forms` as forms ON forms.id = fields.form_id
+                    FROM `*PREFIX*ze_fields` as fields 
+                    INNER JOIN `*PREFIX*ze_extractions` as extractions ON extractions.id = fields.extraction_id
+                    LEFT JOIN `*PREFIX*ze_forms` as forms ON forms.id = fields.form_id
                     WHERE fields.extraction_id = ?
                    ORDER BY fields.order_index
                    
@@ -136,7 +136,7 @@ if($selected){
 
     public function findByExtractionAndFieldId($extractionId, $fieldId)
     {
-        $sql = 'SELECT * FROM `*PREFIX*zendextract_fields` ' .
+        $sql = 'SELECT * FROM `*PREFIX*ze_fields` ' .
             'WHERE `extraction_id` = ? AND field_id = ?';
 
         $stmt = $this->execute($sql, [$extractionId, $fieldId]);

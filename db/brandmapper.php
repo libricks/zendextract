@@ -18,7 +18,7 @@ use OCP\AppFramework\Db\Mapper;
 class BrandMapper extends Mapper
 {
     public function __construct(IDBConnection $db) {
-        parent::__construct($db, 'zendextract_brands');
+        parent::__construct($db, 'ze_brands');
     }
 
     /**
@@ -26,14 +26,14 @@ class BrandMapper extends Mapper
      * @throws \OCP\AppFramework\Db\MultipleObjectsReturnedException if more than one result
      */
     public function find($id) {
-        $sql = 'SELECT * FROM `*PREFIX*zendextract_brands` ' .
+        $sql = 'SELECT * FROM `*PREFIX*ze_brands` ' .
             'WHERE `id` = ?';
         return $this->findEntity($sql, [$id]);
     }
 
 
     public function findAll() {
-        $sql = 'SELECT * FROM `*PREFIX*zendextract_brands` ';
+        $sql = 'SELECT * FROM `*PREFIX*ze_brands` ';
         return $this->findEntities($sql);
     }
 }

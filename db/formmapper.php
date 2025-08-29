@@ -18,7 +18,7 @@ use OCP\AppFramework\Db\Mapper;
 class FormMapper extends Mapper
 {
     public function __construct(IDBConnection $db) {
-        parent::__construct($db, 'zendextract_forms');
+        parent::__construct($db, 'ze_forms');
     }
 
     /**
@@ -26,7 +26,7 @@ class FormMapper extends Mapper
      * @throws \OCP\AppFramework\Db\MultipleObjectsReturnedException if more than one result
      */
     public function find($id) {
-        $sql = 'SELECT * FROM `*PREFIX*zendextract_forms` ' .
+        $sql = 'SELECT * FROM `*PREFIX*ze_forms` ' .
             'WHERE `id` = ?';
         return $this->findEntity($sql, [$id]);
     }
@@ -34,7 +34,7 @@ class FormMapper extends Mapper
 	public function findNameByExtractionId($extractionId)
 	{
 
-		$sql = 'SELECT `name` FROM `*PREFIX*zendextract_forms` ' .
+		$sql = 'SELECT `name` FROM `*PREFIX*ze_forms` ' .
 		       'WHERE `extraction_id` = ?';
 
 
@@ -56,7 +56,7 @@ class FormMapper extends Mapper
     public function findByExtractionId($extractionId)
     {
 
-        $sql = 'SELECT form_id FROM `*PREFIX*zendextract_forms` ' .
+        $sql = 'SELECT form_id FROM `*PREFIX*ze_forms` ' .
             'WHERE `extraction_id` = ?';
 
 
@@ -77,12 +77,12 @@ class FormMapper extends Mapper
     public function deleteByExtractionId($extractionId)
     {
 
-        $sql = 'DELETE fields FROM `*PREFIX*zendextract_fields` as fields
-                INNER JOIN `*PREFIX*zendextract_forms` as forms ON fields.form_id = forms.id
+        $sql = 'DELETE fields FROM `*PREFIX*ze_fields` as fields
+                INNER JOIN `*PREFIX*ze_forms` as forms ON fields.form_id = forms.id
                 WHERE forms.extraction_id = ?';
         $stmt = $this->execute($sql, [$extractionId]);
 
-        $sql = 'DELETE FROM `*PREFIX*zendextract_forms` WHERE extraction_id = ?';
+        $sql = 'DELETE FROM `*PREFIX*ze_forms` WHERE extraction_id = ?';
         $stmt = $this->execute($sql, [$extractionId]);
 
         $stmt->closeCursor();

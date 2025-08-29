@@ -18,7 +18,7 @@ use OCP\AppFramework\Db\Mapper;
 class ExtractionMapper extends Mapper
 {
     public function __construct(IDBConnection $db) {
-        parent::__construct($db, 'zendextract_extractions');
+        parent::__construct($db, 'ze_extractions');
     }
 
     /**
@@ -26,18 +26,18 @@ class ExtractionMapper extends Mapper
      * @throws \OCP\AppFramework\Db\MultipleObjectsReturnedException if more than one result
      */
     public function find($id) {
-        $sql = 'SELECT * FROM `*PREFIX*zendextract_extractions` ' .
+        $sql = 'SELECT * FROM `*PREFIX*ze_extractions` ' .
             'WHERE `id` = ?';
         return $this->findEntity($sql, [$id]);
     }
 
 
     public function findAll() {
-        $sql = 'SELECT * FROM `*PREFIX*zendextract_extractions` ORDER BY CONVERT(`name`USING UTF8) ';
+        $sql = 'SELECT * FROM `*PREFIX*ze_extractions` ORDER BY CONVERT(`name`USING UTF8) ';
         return $this->findEntities($sql);
     }
     public function findbyGroupId($id){
-        $sql = 'SELECT * FROM `*PREFIX*zendextract_extractions` ' .
+        $sql = 'SELECT * FROM `*PREFIX*ze_extractions` ' .
             'WHERE `group_id` = ?';
         return $this->findEntities($sql, [$id]);
     }

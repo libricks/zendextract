@@ -32,8 +32,8 @@ class Version0053Date20240524091332 extends SimpleMigrationStep {
                 /** @var ISchemaWrapper $schema */
                 $schema = $schemaClosure();
 
-                if (!$schema->hasTable('zendextract_extractions')) {
-                        $table = $schema->createTable('zendextract_extractions');
+                if (!$schema->hasTable('ze_extractions')) {
+                        $table = $schema->createTable('ze_extractions');
                         $table->addColumn('id', 'integer', [
                                 'autoincrement' => true,
                                 'notnull' => true,
@@ -57,12 +57,12 @@ class Version0053Date20240524091332 extends SimpleMigrationStep {
                                 'notnull' => true,
                         ]);
                         $table->setPrimaryKey(['id']);
-                        $table->addUniqueIndex(['name'], 'name_index');
+                        $table->addUniqueIndex(['name'], 'idx_extractions1');
                         $table->addIndex(['brand_id'], 'brand_index');
                 }
 
-                if (!$schema->hasTable('zendextract_forms')) {
-                        $table = $schema->createTable('zendextract_forms');
+                if (!$schema->hasTable('ze_forms')) {
+                        $table = $schema->createTable('ze_forms');
                         $table->addColumn('id', 'integer', [
                                 'autoincrement' => true,
                                 'notnull' => true,
@@ -87,8 +87,8 @@ class Version0053Date20240524091332 extends SimpleMigrationStep {
                         $table->addIndex(['extraction_id'], 'extractionid_index');
                 }
 
-                if (!$schema->hasTable('zendextract_fields')) {
-                        $table = $schema->createTable('zendextract_fields');
+                if (!$schema->hasTable('ze_fields')) {
+                        $table = $schema->createTable('ze_fields');
                         $table->addColumn('id', 'integer', [
                                 'autoincrement' => true,
                                 'notnull' => true,
@@ -157,8 +157,8 @@ class Version0053Date20240524091332 extends SimpleMigrationStep {
                         $table->addIndex(['form_id'], 'formid_index');
                 }
 
-                if (!$schema->hasTable('zendextract_brands')) {
-                        $table = $schema->createTable('zendextract_brands');
+                if (!$schema->hasTable('ze_brands')) {
+                        $table = $schema->createTable('ze_brands');
                         $table->addColumn('id', 'integer', [
                                 'autoincrement' => true,
                                 'notnull' => true,
@@ -169,7 +169,7 @@ class Version0053Date20240524091332 extends SimpleMigrationStep {
                                 'length' => 100,
                         ]);
                         $table->setPrimaryKey(['id']);
-                        $table->addUniqueIndex(['name'], 'name_index');
+                        $table->addUniqueIndex(['name'], 'idx_brands1');
                 }
                 return $schema;
         }
