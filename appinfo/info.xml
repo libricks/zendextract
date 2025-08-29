@@ -29,7 +29,7 @@
     <ocsid></ocsid>
     <dependencies>
         <owncloud min-version="9.2"/>
-        <nextcloud min-version="13"/>
+        <nextcloud min-version="13" max-version="40"/>
     </dependencies>
 
     <settings>
