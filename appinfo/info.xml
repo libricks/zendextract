@@ -38,4 +38,15 @@
 
     <standalone />
 
+    <navigations>
+        <navigation>
+            <id>zendextract</id>
+            <name>Zend Extract</name>
+            <route>zendextract.extraction.index</route>
+            <order>0</order>
+            <icon>app.svg</icon>
+            <type>link</type>
+        </navigation>
+    </navigations>
+
 </info>
